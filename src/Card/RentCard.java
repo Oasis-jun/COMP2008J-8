@@ -1,12 +1,20 @@
 package Card;
 
+import java.awt.Color;
+import java.awt.Image;
+
 public class RentCard extends Card implements Colored{
 	String color;
-	int worth;
-	public RentCard(String c,int w,String image) {
-		color=c;
-		worth = w;
-		this.setImage(GetImage.getImage(image));
+	int value;
+	public RentCard(String color,int value,Image image) {
+		this.color = color;
+		this.value = value;
+		this.setImage(getImage());
+	}
+	@Override
+	public Color getColor() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 

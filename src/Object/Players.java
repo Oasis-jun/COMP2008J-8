@@ -1,8 +1,10 @@
 package Object;
 
+import java.awt.Image;
+
 public class Players {
-	private []<Card> handcard = new [10]<Card>;
-	private string name;
+
+	private String name;
 	private Image image;
-	private 
+
 }
