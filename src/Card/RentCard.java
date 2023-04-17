@@ -4,18 +4,21 @@ import java.awt.Color;
 import java.awt.Image;
 
 public class RentCard extends Card implements Colored{
-	String color;
-	int value;
-	public RentCard(String color,int value,Image image) {
+	private Color color;
+	private int value;
+	public RentCard(Color color, int value, Image image) {
+		super(image,value);
 		this.color = color;
-		this.value = value;
-		this.setImage(getImage());
+		
 	}
-	@Override
+
 	public Color getColor() {
-		// TODO Auto-generated method stub
-		return null;
+		return color;
 	}
 	
+	public int rent() {
+		return value;
+		
+	}
 
 }

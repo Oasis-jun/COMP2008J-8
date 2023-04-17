@@ -4,15 +4,29 @@ import java.awt.Color;
 import java.awt.Image;
 
 public class Properties extends Card implements Colored{
-	private String color;
-	private Properties (String color,Image image) {	
+	private Color color;
+	private int level;
+	private int num = 0;
+	public Properties(int value, Image image, Color color, int level) {	
+		super(image,value);
 		this.color=color;
-		this.setImage(getImage());
+		this.num = level;
+		
 	}
-	@Override
+
 	public Color getColor() {
-		// TODO Auto-generated method stub
-		return null;
+		return color;
 	}
 	
+	public void add() {
+		num++;
+	}
+	
+	public boolean complete() {
+		if(num == level) {
+			return true;
+		}else {
+			return false;
+		}
+	}
 }

@@ -3,19 +3,16 @@ package Card;
 import java.awt.Image;
 
 public  class ActionCard extends Card implements Namable{
-	String name;
-	int value;
+	private String name;
 	
 	public ActionCard(Image image, int value, String name) {
+		super(image,value);
 		this.name = name;
-		this.value = value;
-		this.setImage(getImage());
+		
 	}
 
-	@Override
 	public String getName() {
-		// TODO Auto-generated method stub
-		return null;
+		return name;
 	}
 	
 }
