@@ -6,4 +6,5 @@
  *
  */
 module MonopolyDeal {
+	requires java.desktop;
 }

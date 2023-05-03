@@ -1,5 +1,6 @@
 package Card;
 
 public interface Colored {
-	Color getColor();
+	String getColor();
+	void setColor(String color);
 }
