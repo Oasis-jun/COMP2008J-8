@@ -1,4 +1,4 @@
-package Card;
+package card;
 import java.awt.Image;
 import java.io.IOException;
 
@@ -9,6 +9,7 @@ public abstract class Card {
 	private boolean visible;
 	private Image image;
 	private int worth;
+
 	
 	
 	public int getWorth() {

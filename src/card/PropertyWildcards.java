@@ -1,4 +1,4 @@
-package Card;
+package card;
 
 public class PropertyWildcards extends Card implements Colored{
 	private String color;

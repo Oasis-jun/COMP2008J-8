@@ -1,4 +1,4 @@
-package Card;
+package card;
 
 public  class ActionCard extends Card implements Namable{
 	private String name;

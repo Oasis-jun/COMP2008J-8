@@ -1,12 +1,12 @@
-package Card;
+package card;
 import java.util.HashMap;
 
-public class Properties extends Card implements Colored{
+public class Property extends Card implements Colored{
 	private String color;
 	private int setnum;
 	private int maxsetnum;
 	private HashMap<Integer,Integer> cost;
-	public Properties(String color, String path, int worth, int[] inputcost) {
+	public Property(String color, String path, int worth, int[] inputcost) {
 		this.color = color;
 		this.setImage(path);
 		this.setWorth(worth);

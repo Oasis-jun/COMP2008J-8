@@ -1,4 +1,4 @@
-package Card;
+package card;
 import java.util.ArrayList;
 
 public class RentCard extends ActionCard{

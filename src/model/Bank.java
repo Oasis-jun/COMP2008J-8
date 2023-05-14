@@ -1,4 +1,4 @@
-package Object;
+package model;
 
 public class Bank {
 

@@ -1,4 +1,4 @@
-package Card;
+package card;
 
 public interface Colored {
 	String getColor();
