@@ -1,11 +1,13 @@
 package view.panel;
 
+import model.Player;
+
 import javax.swing.*;
 import java.awt.*;
 
 public class PropertyPanel extends DebugPanel {
 
-    public PropertyPanel() {
+    public PropertyPanel(Player player) {
 
         setBorder(BorderFactory.createTitledBorder("Properties Cards"));
         setBackground(Color.WHITE);

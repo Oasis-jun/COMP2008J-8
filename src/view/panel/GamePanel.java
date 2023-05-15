@@ -12,11 +12,19 @@ public class GamePanel extends JPanel{
 
     private List<PlayerPanel> playerPanelList;
     public GamePanel(GameController controller) {
+        setBorder(BorderFactory.createTitledBorder("Monopoly Deal"));
         playerPanelList = new ArrayList<>();
         List<Player> players=controller.getPlayers();
         for (Player player : players) {
             PlayerPanel playerPanel = new PlayerPanel(player);
             add(playerPanel);
+            playerPanelList.add(playerPanel);
+            playerPanel.addConfirmAction(e->{
+                controller.turnToNextPlayer();
+                updatePlayerPanelList();
+                doLayout();
+                repaint();
+            });
         }
 
 
@@ -30,13 +38,22 @@ public class GamePanel extends JPanel{
 
         setLayout(new FlowLayout(FlowLayout.CENTER));
         setPreferredSize(new Dimension(1700,2500));
-
         startButton.addActionListener(e->{
-            this.remove(startButton);
+//            this.remove(startButton);
             controller.dealCardToPlayers();
-
-
+            controller.turnToNextPlayer();
+            this.remove(horizontalBox);
+            updatePlayerPanelList();
+            doLayout();
+            repaint();
         });
+    }
+
+    private void updatePlayerPanelList() {
+        for (PlayerPanel playerPanel : playerPanelList) {
+            playerPanel.updatePlayer();
+        }
+
     }
 
 
