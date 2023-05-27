@@ -1,6 +1,6 @@
-package model;
+package model.player;
 
-import card.Card;
+import model.card.Card;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,9 +10,16 @@ public class Bank {
     int balance;
     private List<Card> cardInBank=new ArrayList<>();
     public void deposit(Card handCard) {
+        balance=handCard.getWorth()+balance;
         cardInBank.add(handCard);
     }
 
+    public void pay(Card card) {
+        boolean remove = cardInBank.remove(card);
+        if (remove){
+            balance=balance-card.getWorth();
+        }
+    }
     public Bank() {
 
     }
