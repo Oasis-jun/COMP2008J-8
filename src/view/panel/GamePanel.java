@@ -1,22 +1,26 @@
 package view.panel;
 
 import controller.GameController;
-import model.Player;
+import model.player.Player;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GamePanel extends JPanel{
+public class GamePanel extends JLabel{
 
     private List<PlayerPanel> playerPanelList;
+
+    private GameController controller;
     public GamePanel(GameController controller) {
+        this.controller=controller;
         setBorder(BorderFactory.createTitledBorder("Monopoly Deal"));
         playerPanelList = new ArrayList<>();
         List<Player> players=controller.getPlayers();
+        // 根据玩家信息初始化玩家的面板
         for (Player player : players) {
-            PlayerPanel playerPanel = new PlayerPanel(player);
+            PlayerPanel playerPanel = new PlayerPanel(player,controller,this);
             add(playerPanel);
             playerPanelList.add(playerPanel);
             playerPanel.addConfirmAction(e->{
@@ -26,7 +30,6 @@ public class GamePanel extends JPanel{
                 repaint();
             });
         }
-
 
         add(new JLabel("---------------------------------------This is a message---------------------------------------"));
         JPanel horizontalBox = new  JPanel();
@@ -53,7 +56,12 @@ public class GamePanel extends JPanel{
         for (PlayerPanel playerPanel : playerPanelList) {
             playerPanel.updatePlayer();
         }
+    }
 
+
+    public void playerActionPerforming() {
+        controller.turnToNextPayingPlayer();
+        updatePlayerPanelList();
     }
 
 

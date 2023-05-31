@@ -1,9 +1,11 @@
 package view.panel;
 
-import model.Player;
+import java.awt.Color;
+import java.awt.Dimension;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.BorderFactory;
+
+import model.Player;
 
 public class BankPanel extends DebugPanel {
     public BankPanel(Player player) {

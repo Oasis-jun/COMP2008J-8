@@ -18,17 +18,5 @@ public class StealRequest extends GameRequest{
         this.fullSet = fullSet;
     }
 
-    public void execute(Player player){
-        Player issuer = this.getIssuer();
-        Property targetPlayerProperty = this.getTargetPlayerProperty();
-        if (!this.isFullSet()){
-            issuer.addProperty(targetPlayerProperty.reduceProperty());
-        }else {
-            for (int i = 0; i < targetPlayerProperty.getMaxSetNum(); i++) {
-                issuer.addProperty(targetPlayerProperty.reduceProperty());
-            }
-        }
-    };
-
 
 }

@@ -1,6 +1,5 @@
 package test;
 
-import view.MenuFrame;
 import view.panel.GamePanel;
 import view.panel.PlayerPanel;
 

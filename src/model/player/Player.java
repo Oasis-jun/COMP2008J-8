@@ -73,17 +73,6 @@ public class Player {
         return propertiesCard;
     }
 
-    public boolean win() {
-        int set=0;
-
-        for (Property value : properties.values()) {
-            set  = set + value.getSetNumber()/value.getMaxSetNum();
-        }
-        return set >2;
-
-
-    }
-
 
     public enum Status{
         playing,waiting,action, decidingWildCardChange, paying

@@ -3,7 +3,7 @@ package model.player;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class GameRequest {
+public class GameRequest {
 
     public GameRequest(Player issuer, List<Player> targetPlayers) {
         this.issuer = issuer;
@@ -27,9 +27,5 @@ public abstract class GameRequest {
     Player issuer;
 
     List<Player> targetPlayers;
-
-    public void execute(Player player){
-
-    };
 
 }

@@ -6,7 +6,7 @@ import view.GameBoardFrame;
 import javax.swing.*;
 import java.awt.*;
 
-public class MenuPanel extends DebugPanel{
+public class MenuPanel extends JPanel{
 
     JButton next;
 //    public MenuPanel() {

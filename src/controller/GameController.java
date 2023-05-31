@@ -1,9 +1,9 @@
 package controller;
 
-import card.Card;
-import card.MoneyCard;
-import card.PropertyCard;
-import model.*;
+import model.card.*;
+import model.player.GameRequest;
+import model.player.PayingRequest;
+import model.player.Player;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -15,66 +15,120 @@ public class GameController {
 
     private List<Card> drawPile;
 
+
     private List<Card> playPile;
 
     private Integer roundIdx=-1;
 
+    private List<Player> payingPlayerList = new ArrayList<>();
+    private Player actionPlayer;
+
+    private Status status;
+
+
+
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status=status;
+    }
+
+    public void drawCardsToPlayer(Player player, int num) {
+        for (int i = 0; i < num; i++) {
+            player.getHandCards().add(drawPile.remove(0));
+        }
+    }
+
+    public void setActionPlayer(Player player) {
+        actionPlayer = player;
+    }
+
+    public enum Status{
+        playing, paying
+    }
     public void init(Integer playerNum) {
         drawPile = initDrawPile();
         playerList = new ArrayList<Player>();
+        playPile = new ArrayList<>();
         this.playerNum = playerNum;
         for (int i = 0; i < playerNum; i++) {
             playerList.add(new Player("player" + (i + 1)));
         }
+        this.status = Status.playing;
+    }
+    public List<Card> getPlayPile() {
+        return playPile;
     }
 
     private List<Card> initDrawPile() {
         List<Card> cards = new ArrayList<>();
-        cards.add(new MoneyCard("img/10M.jpg", 10));
+        cards.add(CardFactory.createTenMillionCard());
+        cards.add(CardFactory.createLightBlueAndBrownCard());
+        cards.add(CardFactory.createLightBlueAndRailroadCard());
+        cards.add(CardFactory.createDarkBlueAndGreenCard());
+        cards.add(CardFactory.createRailroadAndGreenCard());
+        cards.add(CardFactory.createUtilityAndRailroadCard());
+//        for (int i = 0; i < 200; i++) {
+//            cards.add(CardFactory.createBrownCard());
+//            cards.add(CardFactory.createGreenCard());
+//            cards.add(CardFactory.createDealBreakerActionCard());
+//            cards.add(CardFactory.createSlyDealActionCard());
+////            cards.add(CardFactory.createSlyDealActionCard());
+//        }
         for (int i = 0; i < 2; i++) {
-            cards.add(new MoneyCard("img/5M.jpg", 5));
+            cards.add(CardFactory.createBrownCard());
+            cards.add(CardFactory.createDarkBlueCard());
+            cards.add(CardFactory.createFiveMillionCard());
+            cards.add(CardFactory.createDarkBlueAndGreenRentCard());
+            cards.add(CardFactory.createRedAndYellowRentCard());
+            cards.add(CardFactory.createPurpleAndOrangeRentCard());
+            cards.add(CardFactory.createLightBlueAndBrownRentCard());
+            cards.add(CardFactory.createLightBlueAndBrownRentCard());
+            cards.add(CardFactory.createRailroadAndUtilityRentCard());
+            cards.add(CardFactory.createPurpleOrangeCard());
+            cards.add(CardFactory.createRedYellowCard());
+            cards.add(CardFactory.createMultiColorCard());
+            cards.add(CardFactory.createDoubleTheRentActionCard());
+
         }
+
         for (int i = 0; i < 3; i++) {
-            cards.add(new MoneyCard("img/4M.jpg", 4));
-        }
-        for (int i = 0; i < 3; i++) {
-            cards.add(new MoneyCard("img/3M.jpg", 3));
-        }
-        for (int i = 0; i < 5; i++) {
-            cards.add(new MoneyCard("img/2M.jpg", 2));
-        }
-        for (int i = 0; i < 6; i++) {
-            cards.add(new MoneyCard("img/1M.jpg", 1));
-        }
-        for (int i = 0; i < 2; i++) {
-            cards.add(new PropertyCard("Brown", "img/Brown.jpg", 1, new int[]{1, 2}));
-        }
-        for (int i = 0; i < 2; i++) {
-            cards.add(new PropertyCard("Blue", "img/Blue.jpg", 4, new int[]{3, 8}));
-        }
-        for (int i = 0; i < 3; i++) {
-            cards.add(new PropertyCard("Green", "img/Green.jpg", 4, new int[]{2, 4, 7}));
-        }
-        for (int i = 0; i < 3; i++) {
-            cards.add(new PropertyCard("Light Blue", "img/Light Blue.jpg", 1, new int[]{1, 2, 3}));
-        }
-        for (int i = 0; i < 3; i++) {
-            cards.add(new PropertyCard("Orange", "img/Orange.jpg", 2, new int[]{1, 3, 5}));
-        }
-        for (int i = 0; i < 3; i++) {
-            cards.add(new PropertyCard("Pink", "img/Pink.jpg", 2, new int[]{1, 2, 4}));
+            cards.add(CardFactory.createFourMillionCard());
+            cards.add(CardFactory.createThreeMillionCard());
+            cards.add(CardFactory.createGreenCard());
+            cards.add(CardFactory.createLightBlueCard());
+            cards.add(CardFactory.createOrangeCard());
+            cards.add(CardFactory.createPurleCard());
+            cards.add(CardFactory.createUtilityCard());
+            cards.add(CardFactory.createYellowCard());
+            cards.add(CardFactory.createWildRentCard());
+            cards.add(CardFactory.createDebtCollectorActionCard());
+            cards.add(CardFactory.createItsMyBirthdayActionCard());
+            cards.add(CardFactory.createForceDealActionCard());
+            cards.add(CardFactory.createHotelActionCard());
+            cards.add(CardFactory.createHouseActionCard());
+            cards.add(CardFactory.createJustSayNoActionCard());
+            cards.add(CardFactory.createSlyDealActionCard());
+
         }
         for (int i = 0; i < 4; i++) {
-            cards.add(new PropertyCard("Railroad", "img/Railroad.jpg", 2, new int[]{1, 2, 3, 4}));
+            cards.add(CardFactory.createRailroadCard());
         }
-        for (int i = 0; i < 3; i++) {
-            cards.add(new PropertyCard("Utility", "img/Utility.jpg", 2, new int[]{1, 2}));
+        for (int i = 0; i < 5; i++) {
+            cards.add(CardFactory.createTwoMillionCard());
         }
-        for (int i = 0; i < 3; i++) {
-            cards.add(new PropertyCard("Yellow", "img/Yellow.jpg", 2, new int[]{1, 2}));
+        for (int i = 0; i < 6; i++) {
+            cards.add(CardFactory.createOneMillionCard());
+        }
+        for (int i = 0; i < 10; i++) {
+            cards.add(CardFactory.createPassGoActionCard());
         }
 
-
+        Collections.shuffle(cards);
+        Collections.shuffle(cards);
         Collections.shuffle(cards);
         return cards;
     }
@@ -89,7 +143,6 @@ public class GameController {
                 player.getHandCards().add(drawPile.remove(0));
             }
         }
-
     }
 
     public List<Player> getPlayers() {
@@ -115,6 +168,32 @@ public class GameController {
             }
         }
 
+
+    }
+
+    public void acceptRequest(GameRequest payingRequest) {
+        Player issuer = payingRequest.getIssuer();
+        actionPlayer = issuer;
+        for (Player player : payingRequest.getTargetPlayers()) {
+            player.acceptRequest(payingRequest);
+            payingPlayerList.add(player);
+        }
+    }
+
+
+    public void turnToNextPayingPlayer() {
+        if (payingPlayerList.isEmpty()){
+            if (actionPlayer.getTurnInfo().getPerformingActionCard().isEmpty()){
+                actionPlayer.setStatus(Player.Status.playing);
+                actionPlayer=null;
+            }
+            this.status=Status.playing;
+
+        }else {
+            Player player = payingPlayerList.remove(0);
+            player.setStatus(Player.Status.paying);
+            this.status=Status.paying;
+        }
 
     }
 }

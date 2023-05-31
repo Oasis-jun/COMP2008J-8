@@ -1,11 +1,11 @@
 package view.panel;
 
-import model.Player;
+import model.player.Player;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class PropertyPanel extends DebugPanel {
+public class PropertyPanel extends JPanel {
 
     public PropertyPanel(Player player) {
 

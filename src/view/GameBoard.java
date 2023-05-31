@@ -7,11 +7,15 @@ import java.awt.*;
 
 public class GameBoard {
 
-
-    int playerNum;
+    /**
+     * MVC中的controller
+     */
     private GameController controller;
 
 
+    /**
+     * MVC中的view
+     */
     private GameBoardFrame gameBoardFrame;
 
 
@@ -21,6 +25,10 @@ public class GameBoard {
     }
 
 
+    /**
+     * 大富翁游戏的入口
+     * 先启动一个菜单frame，选择人数后在回调函数里面打开游戏的主板frame
+     */
     public void start(){
         JFrame menuFrame = new JFrame();
         JLabel label = new JLabel("Please select player number:");
@@ -31,6 +39,8 @@ public class GameBoard {
         menuFrame.add(next);
         menuFrame.setLayout(new FlowLayout(FlowLayout.LEFT));
         next.addActionListener(e->{
+
+            // 选择人数后在回调函数里面打开游戏的主板frame
             Integer playerNum = Integer.valueOf((String) comboBox.getSelectedItem());
             controller.init(playerNum);
             gameBoardFrame = new GameBoardFrame(controller);
@@ -41,9 +51,7 @@ public class GameBoard {
         menuFrame.pack();
     }
 
-    public static void main(String[] args) {
-        new GameBoard().start();
-    }
+
 
 
 }
