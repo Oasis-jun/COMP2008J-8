@@ -1,5 +1,8 @@
 package model.card;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class CardFactory {
 
     public static PropertyCard createOrangeCard(){
@@ -160,6 +163,71 @@ public class CardFactory {
     public static Card createSlyDealActionCard(){
         return new ActionCard("Sly Deal","img/Sly Deal.jpg",3);
     }
+
+
+    public static List<Card> createMonopolyDrawCards(){
+        List<Card> cards = new ArrayList<>();
+        cards.add(CardFactory.createTenMillionCard());
+        cards.add(CardFactory.createLightBlueAndBrownCard());
+        cards.add(CardFactory.createLightBlueAndRailroadCard());
+        cards.add(CardFactory.createDarkBlueAndGreenCard());
+        cards.add(CardFactory.createRailroadAndGreenCard());
+        cards.add(CardFactory.createUtilityAndRailroadCard());
+//        for (int i = 0; i < 200; i++) {
+//           cards.add(CardFactory.createJustSayNoActionCard());
+//           cards.add(CardFactory.createItsMyBirthdayActionCard());
+//        }
+        for (int i = 0; i < 2; i++) {
+            cards.add(CardFactory.createBrownCard());
+            cards.add(CardFactory.createDarkBlueCard());
+            cards.add(CardFactory.createFiveMillionCard());
+            cards.add(CardFactory.createDarkBlueAndGreenRentCard());
+            cards.add(CardFactory.createRedAndYellowRentCard());
+            cards.add(CardFactory.createPurpleAndOrangeRentCard());
+            cards.add(CardFactory.createLightBlueAndBrownRentCard());
+            cards.add(CardFactory.createLightBlueAndBrownRentCard());
+            cards.add(CardFactory.createRailroadAndUtilityRentCard());
+            cards.add(CardFactory.createPurpleOrangeCard());
+            cards.add(CardFactory.createRedYellowCard());
+            cards.add(CardFactory.createMultiColorCard());
+            cards.add(CardFactory.createDoubleTheRentActionCard());
+
+        }
+
+        for (int i = 0; i < 3; i++) {
+            cards.add(CardFactory.createFourMillionCard());
+            cards.add(CardFactory.createThreeMillionCard());
+            cards.add(CardFactory.createGreenCard());
+            cards.add(CardFactory.createLightBlueCard());
+            cards.add(CardFactory.createOrangeCard());
+            cards.add(CardFactory.createPurleCard());
+            cards.add(CardFactory.createUtilityCard());
+            cards.add(CardFactory.createYellowCard());
+            cards.add(CardFactory.createWildRentCard());
+            cards.add(CardFactory.createDebtCollectorActionCard());
+            cards.add(CardFactory.createItsMyBirthdayActionCard());
+            cards.add(CardFactory.createForceDealActionCard());
+            cards.add(CardFactory.createHotelActionCard());
+            cards.add(CardFactory.createHouseActionCard());
+            cards.add(CardFactory.createJustSayNoActionCard());
+            cards.add(CardFactory.createSlyDealActionCard());
+
+        }
+        for (int i = 0; i < 4; i++) {
+            cards.add(CardFactory.createRailroadCard());
+        }
+        for (int i = 0; i < 5; i++) {
+            cards.add(CardFactory.createTwoMillionCard());
+        }
+        for (int i = 0; i < 6; i++) {
+            cards.add(CardFactory.createOneMillionCard());
+        }
+        for (int i = 0; i < 10; i++) {
+            cards.add(CardFactory.createPassGoActionCard());
+        }
+        return cards;
+    }
+
 
 
 

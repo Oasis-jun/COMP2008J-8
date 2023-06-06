@@ -12,7 +12,6 @@ public class CardApi {
     public static  void putCardToCenter(Player player, Card card, GameController controller) {
         player.getHandCards().remove(card);
         controller.getPlayPile().add(card);
-        player.getTurnInfo().cardAvailable= player.getTurnInfo().cardAvailable-1;
     }
 
     public static List<Card> getSelectedCard(List<? extends Card> cards) {
@@ -23,5 +22,15 @@ public class CardApi {
             }
         }
         return selectedCard;
+    }
+
+    public static List<Card> getRentCards(List<ActionCard> cards) {
+        ArrayList<Card> availableRentCard = new ArrayList<>();
+        for (ActionCard actionCard : cards) {
+            if (actionCard instanceof RentCard){
+                availableRentCard.add(actionCard);
+            }
+        }
+        return availableRentCard;
     }
 }

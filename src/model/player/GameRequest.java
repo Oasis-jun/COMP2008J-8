@@ -3,7 +3,7 @@ package model.player;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GameRequest {
+public abstract class GameRequest {
 
     public GameRequest(Player issuer, List<Player> targetPlayers) {
         this.issuer = issuer;
@@ -27,5 +27,9 @@ public class GameRequest {
     Player issuer;
 
     List<Player> targetPlayers;
+
+    public void execute(Player player){
+        player.setStatus(Player.Status.waiting);
+    };
 
 }
