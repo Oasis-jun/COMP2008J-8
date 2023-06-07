@@ -112,6 +112,110 @@ public class GameController {
     }
 
 
+    /**
+     * The player executes the action card
+     * @param player
+     */
+    public void playerAction(Player player) {
+        List<Card> handCards = player.getHandCards();
+        ArrayList<ActionCard> selectedCards = new ArrayList<>();
+        for (Card handCard : handCards) {
+            if (handCard.isSelected()){
+                if (handCard instanceof ActionCard){
+                    selectedCards.add((ActionCard) handCard);
+                }else {
+                    throw new RuntimeException("Selected cards contain non-action model.card");
+                }
+            }
+        }
+        if (selectedCards.isEmpty()){
+            throw new RuntimeException("No model.card is selected");
+        }
+        if (selectedCards.size()> player.getTurnInfo().cardAvailable){
+            throw new RuntimeException("User has selected more than 3 three card in this turn");
+        }
+        player.getTurnInfo().getPerformingActionCard().addAll(selectedCards);
+        this.setStatus(Status.paying);
+        player.setStatus(Player.Status.action);
+    }
+
+    /**
+     * Determine if the player is using Just Say No card
+     * @param player
+     * @return
+     */
+    public boolean payWithJustSayNo(Player player) {
+        List<Card> handCards = CardApi.getSelectedCard(player.getHandCards());
+        List<Card> bankCards = CardApi.getSelectedCard(player.getBank().getCardInBank());
+        List<Card> propertyCards=CardApi.getSelectedCard(player.getPropertyCards());
+        //Check whether it is selected. just say no
+        if (!handCards.isEmpty()){
+            if (bankCards.size()+propertyCards.size()>0){
+                throw new RuntimeException("Cannot select hand cards with table card ");
+            }else if (handCards.size()>1){
+                throw new RuntimeException("Cannot select more than one hand card");
+            }else {
+                Card card = handCards.get(0);
+                if (card.getName().equals("Just Say No")){
+                    player.setStatus(Player.Status.waiting);
+                    CardApi.putCardToCenter(player,card,this);
+                    return true;
+                }else {
+                    throw new RuntimeException(card.getName()+" Cannot be selected to pay the bill");
+                }
+            }
+        }
+        return false;
+    }
+
+
+    /**
+     * The player uses the rent card
+     * @param player
+     * @param rentCard
+     */
+    public void playerRentAction(Player player, RentCard rentCard) {
+        List<Card> selectedPropertyCards = CardApi.getSelectedCard(rentCard.getSelectablePropertyCards());
+        if (selectedPropertyCards.size()==0){
+            throw new RuntimeException("No property model.card is selected");
+        }
+        PropertyCard propertyCard = (PropertyCard) selectedPropertyCards.remove(0);
+        if (selectedPropertyCards.size()>1){
+            throw new RuntimeException("Only one property model.card can be selected");
+        }
+        Property property = player.getProperty(propertyCard.getName());
+        if (property==null){
+            throw new RuntimeException("You don't have the selected property model.card");
+        }else {
+            List<Player> payingPlayers = this.getPlayers().stream().filter(p -> p != player).collect(Collectors.toList());
+            playerAskPayAction(player,property.getRentPrice()*rentCard.getRentFactor(),payingPlayers);
+            CardApi.putCardToCenter(player, rentCard, this);
+            player.getTurnInfo().cardAvailable= player.getTurnInfo().cardAvailable-1;
+            player.setStatus(Player.Status.action);
+            player.getTurnInfo().getPerformingActionCard().remove(rentCard);
+
+        }
+    }
+
+    /**
+     * Player discard card
+     * @param player
+     */
+    public void playerDiscardCard(Player player) {
+
+        List<Card> handCards = player.getHandCards();
+        List<Card> selectedHandCard = CardApi.getSelectedCard(handCards);
+        if (handCards.size()-selectedHandCard.size()<7){
+            throw new RuntimeException("The number of the rest card cannot be less than 7");
+        }else {
+            for (Card card : selectedHandCard) {
+                CardApi.putCardToCenter(player, card, this);
+            }
+        }
+    }
+
+
+
     public void startGame() {
         // Deal cards
         dealCardToPlayers();

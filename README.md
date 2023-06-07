@@ -1,5 +1,5 @@
 #  Monopoly Deal Cards
-![Monopoly Deal Cards](C:\Users\86152\Desktop\Monopoly_Group8\game_cover.jpg)
+![Monopoly Deal Cards](game_cover.jpg)
 
 Welcome to the Monopoly Deal Cards game!
 
