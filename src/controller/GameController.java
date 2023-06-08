@@ -4,11 +4,15 @@ import model.card.*;
 import model.player.GameRequest;
 import model.player.PayingRequest;
 import model.player.Player;
+import model.player.Player.Status;
 import model.player.Property;
 
 import javax.swing.*;
+
+
 import java.util.*;
 import java.util.stream.Collectors;
+
  
 public class GameController {
     private List<Player> playerList;
@@ -168,7 +172,10 @@ public class GameController {
         return false;
     }
 
-
+    public void playerAskPayAction(Player player, int i, List<Player> players) {
+        PayingRequest payingRequest = new PayingRequest(player,i,players);
+        acceptRequest(payingRequest);
+    }
     /**
      * The player uses the rent card
      * @param player
