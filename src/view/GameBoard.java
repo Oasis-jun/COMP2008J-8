@@ -8,13 +8,13 @@ import java.awt.*;
 public class GameBoard {
 
     /**
-     * MVC中的controller
+     * controller in MVC
      */
     private GameController controller;
 
 
     /**
-     * MVC中的view
+     * view in MVC
      */
     private GameBoardFrame gameBoardFrame;
 
@@ -26,8 +26,9 @@ public class GameBoard {
 
 
     /**
-     * 大富翁游戏的入口
-     * 先启动一个菜单frame，选择人数后在回调函数里面打开游戏的主板frame
+     * the entrance of the game
+     * Start a menu frame, select the number of people 
+     * in the callback function to open the game's Main board frame
      */
     public void start(){
         JFrame menuFrame = new JFrame();
@@ -40,8 +41,11 @@ public class GameBoard {
         menuFrame.setLayout(new FlowLayout(FlowLayout.LEFT));
         next.addActionListener(e->{
 
-            // 选择人数后在回调函数里面打开游戏的主板frame
-            Integer playerNum = Integer.valueOf((String) comboBox.getSelectedItem());
+            /** 
+             * Select the number of people in the callback function 
+        	 * to open the game's Main board frame
+        	 */ 
+        	Integer playerNum = Integer.valueOf((String) comboBox.getSelectedItem());
             controller.init(playerNum);
             gameBoardFrame = new GameBoardFrame(controller);
             menuFrame.setVisible(false);
