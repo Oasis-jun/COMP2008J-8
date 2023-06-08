@@ -8,6 +8,7 @@ import view.dialog.PerformingRentActionDialog;
 import view.dialog.SelectPropertyFrame;
 import view.label.CardLabel;
 
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
@@ -39,7 +40,7 @@ public class PlayerPanel extends JPanel {
         setBackground(Color.WHITE);
         operationPanel= new OperationPanel();
         handCardPanel = new HandCardPanel(player);
-        bankPanel = new BankPanel(player);
+        BankPanel = new BankPanel(player);
         propertyPanel = new PropertyPanel(player);
         infoPanel = new InfoPanel(player);
         add(infoPanel);

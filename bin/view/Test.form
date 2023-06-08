@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="view.Test">
+  <grid id="27dc6" binding="panel1" custom-create="true" default-binding="true" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="0">
+    <constraints>
+      <xy x="111" y="51" width="652" height="337"/>
+    </constraints>
+    <properties>
+      <background color="-1"/>
+      <enabled value="true"/>
+      <foreground color="-7357658"/>
+      <minimumSize width="30" height="100"/>
+      <opaque value="false"/>
+      <preferredSize width="30" height="100"/>
+    </properties>
+    <clientProperties>
+      <html.disable class="java.lang.Boolean" value="false"/>
+    </clientProperties>
+    <border type="none"/>
+    <children>
+      <component id="665da" class="javax.swing.JLabel" binding="label2" custom-create="true">
+        <constraints/>
+        <properties>
+          <text value="Label"/>
+        </properties>
+      </component>
+      <vspacer id="d8093">
+        <constraints/>
+      </vspacer>
+      <component id="b1635" class="javax.swing.JLabel" binding="label1" custom-create="true">
+        <constraints/>
+        <properties>
+          <text value="Label"/>
+        </properties>
+      </component>
+    </children>
+  </grid>
+</form>

@@ -173,10 +173,9 @@ public class CardFactory {
         cards.add(CardFactory.createDarkBlueAndGreenCard());
         cards.add(CardFactory.createRailroadAndGreenCard());
         cards.add(CardFactory.createUtilityAndRailroadCard());
-//        for (int i = 0; i < 200; i++) {
-//           cards.add(CardFactory.createJustSayNoActionCard());
-//           cards.add(CardFactory.createItsMyBirthdayActionCard());
-//        }
+        
+        
+        
         for (int i = 0; i < 2; i++) {
             cards.add(CardFactory.createBrownCard());
             cards.add(CardFactory.createDarkBlueCard());

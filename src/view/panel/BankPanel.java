@@ -5,7 +5,7 @@ import java.awt.Dimension;
 
 import javax.swing.BorderFactory;
 
-import model.Player;
+import model.player.Player;
 
 public class BankPanel extends DebugPanel {
     public BankPanel(Player player) {
