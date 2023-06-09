@@ -8,7 +8,7 @@ Welcome to the Monopoly Deal Cards game!
 This project aims to bring the classic board game experience of Monopoly into a digital card game format. The objective of the game is to be the first player to collect three full property sets of different colors. In this game, you'll use Action cards to charge rent, swap cards, demand birthday money, and much more.
 
 ## How to Play
-Run Main.java
+Run src/Main.java
 
 ## Group Number
 **Group 8**
@@ -16,43 +16,63 @@ Run Main.java
 ## Team Members and Contributions
 **Zerui Zhan**
 
-Write code for **view** functionality
+- Write code for **view** functionality
 
-Contributed key ideas
+- Contributed key ideas
 
-Design the architecture of the project
+- Design the architecture of the project
 
-participated in code reviews, and optimized performance
+- Participated in code reviews, and optimized performance
 
 
 
 **Jiajun Li (21207296)**
 
-Write code for **control** functionality
+- Write code for **control** functionality
 
-Maintained the document
+- Maintained the document
 
-participated in code reviews, and optimized performance
-Provide valuable feedback
+- Participated in code reviews, and optimized performance
+
+- Provide valuable feedback
 
 
 
 **Weilun Zhou**
-Write code for **model** functionality
 
-participated in code reviews, and optimized performance
+- Write code for **model** functionality
 
-Provide valuable feedback
+- Participated in code reviews, and optimized performance
+
+- Provide valuable feedback
 
 
 
 **Ziqi Wang**
-Write code for **view** functionality
 
-participated in code reviews, and optimized performance
+- Write code for **view** functionality
 
-Provide valuable feedback
+- Participated in code reviews, and optimized performance
 
+- Provide valuable feedback
+
+
+## Branches Explanation
+1. **main** branch:
+   - Contains the majority of the project's updates and changes.
+   - The main branch represents the definitive version of the project.
+
+2. **control** branch:
+   - Initially included some code related to the project's control.
+   - This branch is no longer actively used but is preserved to retain the project's history.
+
+3. **model** branch:
+   - Initially included some code related to the project's model.
+   - This branch is no longer actively used but is preserved to retain the project's history.
+
+4. **view** branch:
+   - Due to the view component being developed in the later stages of the project, code updates were not pushed to this branch.
+   - This branch is no longer actively used.
 
 
 **Enjoy playing the Monopoly Deal Cards game!**
