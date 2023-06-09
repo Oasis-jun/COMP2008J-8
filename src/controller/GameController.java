@@ -221,6 +221,27 @@ public class GameController {
         }
     }
 
+//    /**
+//     * @param player
+//     * @param availableRentCard
+//     * @param doubleTheRentCard
+//     */
+//    public void playerDoubleARentCard(Player player, List<Card> availableRentCard, ActionCard doubleTheRentCard) {
+//        List<Card> selectedRentCard = CardApi.getSelectedCard(availableRentCard);
+//        if (selectedRentCard.isEmpty()){
+//            throw new RuntimeException("No rent is selected");
+//        }
+//        if (selectedRentCard.size()>1){
+//            throw new RuntimeException("Only one rent card can be selected");
+//        }
+//        RentCard rentCard = (RentCard) selectedRentCard.remove(0);
+//        rentCard.doubleTheRent();
+//
+//
+//    }
+
+    
+    
 
 
     public void startGame() {
@@ -231,6 +252,36 @@ public class GameController {
 
     }
 
+    
+    
+    /**
+     * @param player
+     */
+    public void playerPassGoAction(Player player) {
+        drawCardsToPlayer(player,2);
+    }
+    
+//    /**
+//     * @param player
+//     * @param i
+//     * @param selectedPlayer
+//     */
+//    public void playerAskPayAction(Player player, int i, Player selectedPlayer) {
+//        PayingRequest payingRequest = new PayingRequest(player,i,selectedPlayer);
+//        acceptRequest(payingRequest);
+//    }
+
+    /**
+     * @param player
+     * @param i
+     * @param players
+     */
+//    public void playerAskPayAction(Player player, int i, List<Player> players) {
+//
+//    }
+//    
+    
+    
     public void init(Integer playerNum) {
         drawPile = initDrawPile();
         playerList = new ArrayList<>();
@@ -268,6 +319,8 @@ public class GameController {
     }
 
 
+    
+    
     /**
      * After confirming, the player selects the next player and deals 2 cards to the next player
      */
@@ -295,6 +348,10 @@ public class GameController {
     }
 
 
+    
+    
+    
+   
     /**
      * Accept the request from the player and send the request to the specified player
      * @param payingRequest

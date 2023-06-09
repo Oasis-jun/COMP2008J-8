@@ -3,6 +3,7 @@ package view.panel;
 import model.card.*;
 import controller.GameController;
 import model.player.*;
+import model.player.Player.Status;
 import view.dialog.CardSelectDialog;
 import view.dialog.PerformingRentActionDialog;
 import view.dialog.SelectPropertyFrame;
@@ -40,7 +41,7 @@ public class PlayerPanel extends JPanel {
         setBackground(Color.WHITE);
         operationPanel= new OperationPanel();
         handCardPanel = new HandCardPanel(player);
-        BankPanel = new BankPanel(player);
+        bankPanel = new BankPanel(player);
         propertyPanel = new PropertyPanel(player);
         infoPanel = new InfoPanel(player);
         add(infoPanel);
@@ -166,10 +167,9 @@ public class PlayerPanel extends JPanel {
             return;
         }
         player.getTurnInfo().getPerformingActionCard().addAll(selectedCards);
-        controller.setStatus(GameController.Status.paying);
+        controller.setStatus(Status.paying);
         performAction();
     }
-
     private void performAction() {
         Optional<ActionCard> doubleTheRentOpt = player.getTurnInfo().getPerformingActionCard().stream().filter(a -> a.getName().equals("Double The Rent")).findAny();
         if (doubleTheRentOpt.isPresent()){
@@ -199,7 +199,7 @@ public class PlayerPanel extends JPanel {
                     RentCard rentCard = (RentCard) selectedRentCard.remove(0);
                     rentCard.doubleTheRent();
                     player.getTurnInfo().getPerformingActionCard().remove(doubleTheRentCard);
-                    controller.setActionPlayer(player);
+//                    controller.setActionPlayer(player);
                     cardSelectDialog.setVisible(false);
                     CardApi.putCardToCenter(player, doubleTheRentCard, controller);
                     player.setStatus(Player.Status.action);
@@ -319,7 +319,7 @@ public class PlayerPanel extends JPanel {
                     controller.acceptRequest(stealRequest);
                     break;
             }
-            controller.setActionPlayer(player);
+//            controller.setActionPlayer(player);
             player.setStatus(Player.Status.action);
             parent.playerActionPerforming();
             player.getTurnInfo().getPerformingActionCard().remove(actionCard);
@@ -427,7 +427,7 @@ public class PlayerPanel extends JPanel {
         updateInfoPanel();
         doLayout();
         repaint();
-        if (controller.getStatus()==GameController.Status.playing&&player.getStatus() == Player.Status.action){
+        if (controller.getStatus()==Status.playing&&player.getStatus() == Player.Status.action){
             performAction();
         }
     }
