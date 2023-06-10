@@ -7,7 +7,7 @@ import model.player.Player;
 import model.player.Player.Status;
 import model.player.Property;
 
-import javax.swing.*;
+//import javax.swing.*;
 
 
 import java.util.*;
@@ -221,27 +221,31 @@ public class GameController {
         }
     }
 
-//    /**
-//     * @param player
-//     * @param availableRentCard
-//     * @param doubleTheRentCard
-//     */
-//    public void playerDoubleARentCard(Player player, List<Card> availableRentCard, ActionCard doubleTheRentCard) {
-//        List<Card> selectedRentCard = CardApi.getSelectedCard(availableRentCard);
-//        if (selectedRentCard.isEmpty()){
-//            throw new RuntimeException("No rent is selected");
-//        }
-//        if (selectedRentCard.size()>1){
-//            throw new RuntimeException("Only one rent card can be selected");
-//        }
-//        RentCard rentCard = (RentCard) selectedRentCard.remove(0);
-//        rentCard.doubleTheRent();
-//
-//
-//    }
+    
+    
+    
+    
+    /**
+     * @param player
+     * @param availableRentCard
+     * @param doubleTheRentCard
+     */
+    public void playerDoubleARentCard(Player player, List<Card> availableRentCard, ActionCard doubleTheRentCard) {
+        List<Card> selectedRentCard = CardApi.getSelectedCard(availableRentCard);
+        if (selectedRentCard.isEmpty()){
+            throw new RuntimeException("No rent is selected");
+        }
+        if (selectedRentCard.size()>1){
+            throw new RuntimeException("Only one rent card can be selected");
+        }
+        RentCard rentCard = (RentCard) selectedRentCard.remove(0);
+        rentCard.doubleTheRent();
 
-    
-    
+        CardApi.putCardToCenter(player, doubleTheRentCard, this);
+        player.getTurnInfo().cardAvailable= player.getTurnInfo().cardAvailable-1;
+        player.getTurnInfo().getPerformingActionCard().remove(doubleTheRentCard);
+        player.setStatus(Player.Status.action);
+    }
 
 
     public void startGame() {
@@ -261,26 +265,30 @@ public class GameController {
         drawCardsToPlayer(player,2);
     }
     
-//    /**
-//     * @param player
-//     * @param i
-//     * @param selectedPlayer
-//     */
-//    public void playerAskPayAction(Player player, int i, Player selectedPlayer) {
-//        PayingRequest payingRequest = new PayingRequest(player,i,selectedPlayer);
-//        acceptRequest(payingRequest);
-//    }
-
     /**
      * @param player
      * @param i
-     * @param players
+     * @param selectedPlayer
      */
-//    public void playerAskPayAction(Player player, int i, List<Player> players) {
-//
-//    }
-//    
+    public void playerAskPayAction(Player player, int i, Player selectedPlayer) {
+        PayingRequest payingRequest = new PayingRequest(player,i,selectedPlayer);
+        acceptRequest(payingRequest);
+    }
+
     
+    
+
+//    /**
+//
+//     * @param player
+//     * @param i
+//     * @param players
+//     */
+//    public void playerAskPayAction(Player player, int i, List<Player> players) {
+//        PayingRequest payingRequest = new PayingRequest(player,i,players);
+//        acceptRequest(payingRequest);
+//    }    
+//    
     
     public void init(Integer playerNum) {
         drawPile = initDrawPile();
