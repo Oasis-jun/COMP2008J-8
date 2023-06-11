@@ -4,16 +4,12 @@ import model.card.*;
 import model.player.GameRequest;
 import model.player.PayingRequest;
 import model.player.Player;
-import model.player.Player.Status;
 import model.player.Property;
-
-//import javax.swing.*;
 
 
 import java.util.*;
 import java.util.stream.Collectors;
 
- 
 public class GameController {
     private List<Player> playerList;
 
@@ -38,6 +34,10 @@ public class GameController {
     public void setStatus(Status status) {
         this.status=status;
     }
+
+    /**
+     *
+      */
 
 
     /**
@@ -115,7 +115,6 @@ public class GameController {
         }
     }
 
-
     /**
      * The player executes the action card
      * @param player
@@ -152,7 +151,7 @@ public class GameController {
         List<Card> handCards = CardApi.getSelectedCard(player.getHandCards());
         List<Card> bankCards = CardApi.getSelectedCard(player.getBank().getCardInBank());
         List<Card> propertyCards=CardApi.getSelectedCard(player.getPropertyCards());
-        //Check whether it is selected. just say no
+        // To determine whether or not to select just say no
         if (!handCards.isEmpty()){
             if (bankCards.size()+propertyCards.size()>0){
                 throw new RuntimeException("Cannot select hand cards with table card ");
@@ -172,10 +171,7 @@ public class GameController {
         return false;
     }
 
-    public void playerAskPayAction(Player player, int i, List<Player> players) {
-        PayingRequest payingRequest = new PayingRequest(player,i,players);
-        acceptRequest(payingRequest);
-    }
+
     /**
      * The player uses the rent card
      * @param player
@@ -221,11 +217,8 @@ public class GameController {
         }
     }
 
-    
-    
-    
-    
     /**
+     * The player selects the rent card and doubles its price factor
      * @param player
      * @param availableRentCard
      * @param doubleTheRentCard
@@ -248,24 +241,25 @@ public class GameController {
     }
 
 
+
     public void startGame() {
         // Deal cards
         dealCardToPlayers();
-        // Rotation Here rotation goes to Player 1 to play the game
+        // Rotation： Here rotation goes to Player 1 to play the game
         turnToNextPlayer();
 
     }
 
-    
-    
     /**
+     * Players use Pass And Go cards
      * @param player
      */
     public void playerPassGoAction(Player player) {
         drawCardsToPlayer(player,2);
     }
-    
+
     /**
+     * The player initiates the payment request to the selected player
      * @param player
      * @param i
      * @param selectedPlayer
@@ -275,21 +269,21 @@ public class GameController {
         acceptRequest(payingRequest);
     }
 
-    
-    
+    /**
+     * The player initiates the payment request to the selected player
+     * @param player
+     * @param i
+     * @param players
+     */
+    public void playerAskPayAction(Player player, int i, List<Player> players) {
+        PayingRequest payingRequest = new PayingRequest(player,i,players);
+        acceptRequest(payingRequest);
+    }
 
-//    /**
-//
-//     * @param player
-//     * @param i
-//     * @param players
-//     */
-//    public void playerAskPayAction(Player player, int i, List<Player> players) {
-//        PayingRequest payingRequest = new PayingRequest(player,i,players);
-//        acceptRequest(payingRequest);
-//    }    
-//    
-    
+    public enum Status{
+        playing, paying
+    }
+
     public void init(Integer playerNum) {
         drawPile = initDrawPile();
         playerList = new ArrayList<>();
@@ -327,8 +321,6 @@ public class GameController {
     }
 
 
-    
-    
     /**
      * After confirming, the player selects the next player and deals 2 cards to the next player
      */
@@ -356,10 +348,6 @@ public class GameController {
     }
 
 
-    
-    
-    
-   
     /**
      * Accept the request from the player and send the request to the specified player
      * @param payingRequest
@@ -378,7 +366,7 @@ public class GameController {
     public void turnToNextPayingPlayer() {
         Player actionPlayer = getPlayingUser();
         if (payingPlayerList.isEmpty()){
-                //The action player status is changed to playing only when the action Player does not have an action card
+                // The action player status is changed to playing only when the action Player does not have an action card
               if (actionPlayer.getTurnInfo().getPerformingActionCard().isEmpty()){
                 actionPlayer.setStatus(Player.Status.playing);
             }
