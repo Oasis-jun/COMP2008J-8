@@ -1,13 +1,12 @@
 package view.panel;
 
-import java.awt.Color;
-import java.awt.Dimension;
-
-import javax.swing.BorderFactory;
-
 import model.player.Player;
 
-public class BankPanel extends DebugPanel {
+import javax.swing.*;
+import javax.swing.JPanel;
+import java.awt.*;
+
+public class BankPanel extends JPanel {
     public BankPanel(Player player) {
         setBorder(BorderFactory.createTitledBorder("Bank"));
         setBackground(Color.WHITE);

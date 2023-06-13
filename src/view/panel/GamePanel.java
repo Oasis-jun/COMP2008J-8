@@ -2,6 +2,7 @@ package view.panel;
 
 import controller.GameController;
 import model.player.Player;
+import view.GameBoardFrame;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,7 +14,16 @@ public class GamePanel extends JLabel{
     private List<PlayerPanel> playerPanelList;
 
     private GameController controller;
-    public GamePanel(GameController controller) {
+
+    private GameBoardFrame parent;
+
+    /**
+     * 游戏的主要内容为三大部分， 玩家面板，消息面板，开始按钮面板
+     * @param controller
+     * @param gameBoardFrame
+     */
+    public GamePanel(GameController controller, GameBoardFrame gameBoardFrame) {
+        parent= gameBoardFrame;
         this.controller=controller;
         setBorder(BorderFactory.createTitledBorder("Monopoly Deal"));
         playerPanelList = new ArrayList<>();
@@ -23,15 +33,12 @@ public class GamePanel extends JLabel{
             PlayerPanel playerPanel = new PlayerPanel(player,controller,this);
             add(playerPanel);
             playerPanelList.add(playerPanel);
-            playerPanel.addConfirmAction(e->{
-                controller.turnToNextPlayer();
-                updatePlayerPanelList();
-                doLayout();
-                repaint();
-            });
+
         }
 
+        // 消息面板
         add(new JLabel("---------------------------------------This is a message---------------------------------------"));
+        // 开始按钮面板
         JPanel horizontalBox = new  JPanel();
         horizontalBox.setMinimumSize(new Dimension(1700,30));
         horizontalBox.setPreferredSize(new Dimension(1700,30));
@@ -41,18 +48,20 @@ public class GamePanel extends JLabel{
 
         setLayout(new FlowLayout(FlowLayout.CENTER));
         setPreferredSize(new Dimension(1700,2500));
+
         startButton.addActionListener(e->{
-//            this.remove(startButton);
-            controller.dealCardToPlayers();
-            controller.turnToNextPlayer();
+
+            controller.startGame();
             this.remove(horizontalBox);
+            // 根据游戏的状态更新每一个玩家的游戏板块
             updatePlayerPanelList();
             doLayout();
             repaint();
         });
     }
 
-    private void updatePlayerPanelList() {
+    void updatePlayerPanelList() {
+        // 根据游戏的状态更新每一个玩家的游戏板块
         for (PlayerPanel playerPanel : playerPanelList) {
             playerPanel.updatePlayer();
         }
@@ -65,4 +74,7 @@ public class GamePanel extends JLabel{
     }
 
 
+    public void clearGame() {
+        parent.clearGame();
+    }
 }

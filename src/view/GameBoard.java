@@ -5,16 +5,18 @@ import controller.GameController;
 import javax.swing.*;
 import java.awt.*;
 
+import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
+
 public class GameBoard {
 
     /**
-     * controller in MVC
+     * MVC中的controller
      */
     private GameController controller;
 
 
     /**
-     * view in MVC
+     * MVC中的view
      */
     private GameBoardFrame gameBoardFrame;
 
@@ -26,9 +28,8 @@ public class GameBoard {
 
 
     /**
-     * the entrance of the game
-     * Start a menu frame, select the number of people 
-     * in the callback function to open the game's Main board frame
+     * 大富翁游戏的入口
+     * 先启动一个菜单frame，选择人数后在回调函数里面打开游戏的主板frame
      */
     public void start(){
         JFrame menuFrame = new JFrame();
@@ -39,17 +40,18 @@ public class GameBoard {
         menuFrame.add(comboBox);
         menuFrame.add(next);
         menuFrame.setLayout(new FlowLayout(FlowLayout.LEFT));
+        menuFrame.setDefaultCloseOperation(EXIT_ON_CLOSE);
         next.addActionListener(e->{
 
-            /** 
-             * Select the number of people in the callback function 
-        	 * to open the game's Main board frame
-        	 */ 
-        	Integer playerNum = Integer.valueOf((String) comboBox.getSelectedItem());
+
+            // 选择人数后在回调函数里面打开游戏的主板frame
+            Integer playerNum = Integer.valueOf((String) comboBox.getSelectedItem());
             controller.init(playerNum);
+            // 进入主游戏界面
             gameBoardFrame = new GameBoardFrame(controller);
             menuFrame.setVisible(false);
             gameBoardFrame.setVisible(true);
+
         });
         menuFrame.setVisible(true);
         menuFrame.pack();

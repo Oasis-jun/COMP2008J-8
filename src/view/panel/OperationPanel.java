@@ -8,6 +8,7 @@ import java.awt.event.ActionListener;
 
 public class OperationPanel extends JPanel {
 
+    private JButton discardButton;
     private JButton bankingCardButton;
     private JButton actionCardButton;
     private JButton putDownPropertyCardButton;
@@ -20,16 +21,19 @@ public class OperationPanel extends JPanel {
         putDownPropertyCardButton = new OperationButton("Increase Property");
         confirmButton=new OperationButton("Confirm");
         payButton = new OperationButton("Pay");
+        discardButton = new OperationButton("Discard");
         enableAll(false);
         add(bankingCardButton);
         add(actionCardButton);
         add(putDownPropertyCardButton);
-        add(confirmButton);
         add(payButton);
+        add(discardButton);
+
+        add(confirmButton);
 
         setBorder(BorderFactory.createTitledBorder("Operation"));
         setBackground(Color.WHITE);
-        setLayout(new FlowLayout(FlowLayout.CENTER));
+//        setLayout(new FlowLayout(FlowLayout.CENTER));
         setPreferredSize(new Dimension(250, 200));
 
     }
@@ -40,6 +44,7 @@ public class OperationPanel extends JPanel {
         putDownPropertyCardButton.setEnabled(b);
         confirmButton.setEnabled(b);
         payButton.setEnabled(b);
+        discardButton.setEnabled(b);
 
     }
 
@@ -62,6 +67,10 @@ public class OperationPanel extends JPanel {
 
     public void addActionButtonAction(ActionListener al){
         actionCardButton.addActionListener(al);
+    }
+
+    public void addDiscardButtonAction(ActionListener al){
+        discardButton.addActionListener(al);
     }
 
     public void enablePaying(boolean b) {
