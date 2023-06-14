@@ -10,7 +10,7 @@ import java.awt.event.ActionListener;
 public class OperationPanel extends JPanel {
 
     private JButton discardButton;
-    private JButton bankingCardButton;
+    private JButton depositingButton;
     private JButton actionCardButton;
     private JButton putDownPropertyCardButton;
     private JButton confirmButton;
@@ -20,14 +20,14 @@ public class OperationPanel extends JPanel {
     private final int width = 250;
     private final int height = 200;
     public OperationPanel() {
-        bankingCardButton=new OperationButton("Depositing");
+        depositingButton=new OperationButton("Depositing");
         actionCardButton = new OperationButton("Perform action");
         putDownPropertyCardButton = new OperationButton("Increase Property");
         confirmButton=new OperationButton("Confirm");
         payButton = new OperationButton("Pay");
         discardButton = new OperationButton("Discard");
         enableAll(false);
-        add(bankingCardButton);
+        add(depositingButton);
         add(actionCardButton);
         add(putDownPropertyCardButton);
         add(payButton);
@@ -43,7 +43,7 @@ public class OperationPanel extends JPanel {
     }
 
     public void enableAll(boolean b) {
-        bankingCardButton.setEnabled(b);
+        depositingButton.setEnabled(b);
         actionCardButton.setEnabled(b);
         putDownPropertyCardButton.setEnabled(b);
         confirmButton.setEnabled(b);
@@ -54,7 +54,7 @@ public class OperationPanel extends JPanel {
 
 
     public void addDepositAction(ActionListener al) {
-        bankingCardButton.addActionListener(al);
+        depositingButton.addActionListener(al);
     }
 
     public void addNewPropertyAction(ActionListener al) {

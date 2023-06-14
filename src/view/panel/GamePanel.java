@@ -7,6 +7,7 @@ import view.GameBoardFrame;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,17 +23,17 @@ public class GamePanel extends JLabel{
     private int height = 2500;
 
     /**
-     * 游戏的主要内容为三大部分， 玩家面板，消息面板，开始按钮面板
+     * The main content of the game is three parts, the player panel, the message panel, and the start button panel
      * @param controller
      * @param gameBoardFrame
      */
     public GamePanel(GameController controller, GameBoardFrame gameBoardFrame) {
-        parent= gameBoardFrame;
+        this.parent= gameBoardFrame;
         this.controller=controller;
         setBorder(BorderFactory.createTitledBorder("Monopoly Deal"));
         playerPanelList = new ArrayList<>();
         List<Player> players=controller.getPlayers();
-        // 根据玩家信息初始化玩家的面板
+        // Initializes the player's panel based on player information
         for (Player player : players) {
             PlayerPanel playerPanel = new PlayerPanel(player,controller,this);
             add(playerPanel);
@@ -41,7 +42,7 @@ public class GamePanel extends JLabel{
         }
 
 
-        // 开始按钮面板
+        // Start button panel
         JPanel horizontalBox = new  JPanel();
 
         Button startButton = new Button("Start");
@@ -51,30 +52,35 @@ public class GamePanel extends JLabel{
         setLayout(new FlowLayout(FlowLayout.CENTER));
         setPreferredSize(new Dimension((int) (width* GameConfig.SIZE_FACTOR), (int) (height*GameConfig.SIZE_FACTOR)));
 
-        startButton.addActionListener(e->{
-
-            controller.startGame();
-            this.remove(horizontalBox);
-            // 根据游戏的状态更新每一个玩家的游戏板块
-            updatePlayerPanelList();
-            doLayout();
-            repaint();
+        startButton.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                controller.startGame();
+                // remove start button
+                remove(horizontalBox);
+                // Update each player's game board based on the state of the game
+                updatePlayerPanelList();
+            }
         });
     }
 
     void updatePlayerPanelList() {
-        // 根据游戏的状态更新每一个玩家的游戏板块
+        // Update each player's game board based on the state of the game
         for (PlayerPanel playerPanel : playerPanelList) {
-            playerPanel.updatePlayer();
+            playerPanel.update();
         }
     }
 
 
     public void playerActionPerforming() {
-        controller.turnToNextPayingPlayer();
-        updatePlayerPanelList();
+        Player player = controller.turnToNextPayingPlayer();
+        player.notifyListeners();
     }
 
+    public void toNextPlayerToPay() {
+        Player player = controller.turnToNextPayingPlayer();
+        player.notifyListeners();
+    }
 
     public void clearGame() {
         parent.clearGame();

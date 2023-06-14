@@ -9,24 +9,26 @@ import javax.imageio.ImageIO;
 
 public  class Card  implements Namable{
 	private Image image;
+	private boolean selected;
 	private int worth;
-
 	private String name;
 
-	public void setSelected(boolean selected) {
-		this.selected = selected;
-	}
-
-	private boolean selected;
-
+	// cardback means the back of a card
 	private static Card cardBack;
 
 	private static HashMap<String, Image> imageCache = new HashMap<>();
+
 
 	public static Card getCardBack(){
 		if (cardBack==null)
 			cardBack=new Card("CardBack","img/CardBack.jpg",0);
 		return cardBack;
+	}
+	public void setSelected(boolean selected) {
+		this.selected = selected;
+	}
+	public boolean isSelected() {
+		return selected;
 	}
 
 	@Override
@@ -64,11 +66,7 @@ public  class Card  implements Namable{
 
 			this.image = cacheImage;
             } catch (IOException e) {
-                System.out.println("加载图片失败");
+                System.out.println("fail to load the image");
 		}
       }
-
-	public boolean isSelected() {
-		return selected;
-	}
 }

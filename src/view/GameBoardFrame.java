@@ -14,13 +14,13 @@ public class GameBoardFrame extends JFrame {
 
 
     /**
-     * 游戏的最外层框
+     * The outermost box of the game
      * @param gameController
      * @throws HeadlessException
      */
     public GameBoardFrame(GameController gameController) throws HeadlessException {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        // 游戏的主要内容
+        // the main content of the game
         gamePanel = new GamePanel(gameController,this);
         add(gamePanel);
         pack();

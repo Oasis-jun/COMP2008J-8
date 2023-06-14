@@ -1,13 +1,6 @@
 package model.player;
 
 public class StealRequest extends GameRequest{
-    public Property getTargetPlayerProperty() {
-        return targetPlayerProperty;
-    }
-
-    public boolean isFullSet() {
-        return fullSet;
-    }
 
     private final Property targetPlayerProperty;
     private final boolean fullSet;
@@ -18,8 +11,14 @@ public class StealRequest extends GameRequest{
         this.fullSet = fullSet;
     }
 
+    public Property getTargetPlayerProperty() {
+        return targetPlayerProperty;
+    }
+
+    public boolean isFullSet() {
+        return fullSet;
+    }
     public void execute(Player player){
-        Player issuer = this.getIssuer();
         Property targetPlayerProperty = this.getTargetPlayerProperty();
         if (!this.isFullSet()){
             issuer.addProperty(targetPlayerProperty.reduceProperty());
@@ -29,6 +28,7 @@ public class StealRequest extends GameRequest{
             }
         }
         player.setStatus(Player.Status.waiting);
+        issuer.notifyListeners();
     };
 
 

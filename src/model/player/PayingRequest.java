@@ -22,8 +22,6 @@ public class PayingRequest extends GameRequest {
         this.bill = bill;
     }
 
-
-
     public int getBill() {
         return bill;
     }
@@ -39,7 +37,8 @@ public class PayingRequest extends GameRequest {
             worthSum = worthSum+card.getWorth();
         }
         int bill = getBill();
-        if (worthSum>bill||(bankCards.size()==player.getBank().getCardInBank().size()&&propertyCards.size()==player.getPropertyCards().size())){
+        // 要么付够费用，要么全选了把剩下全付了
+        if (worthSum>=bill||(bankCards.size()==player.getBank().getCardInBank().size()&&propertyCards.size()==player.getPropertyCards().size())){
             for (Card card : bankCards) {
                 issuer.getBank().deposit(card);
                 player.getBank().pay(card);
@@ -52,6 +51,7 @@ public class PayingRequest extends GameRequest {
         }else {
             throw new RuntimeException("Selected Card cannot afford the bill");
         }
+        issuer.notifyListeners();
     }
 
 

@@ -6,7 +6,7 @@ import model.player.PayingRequest;
 import model.player.Player;
 import model.player.Property;
 
-
+import javax.swing.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -14,7 +14,6 @@ public class GameController {
     private List<Player> playerList;
 
     private List<Card> drawPile;
-
 
     private List<Card> playPile;
 
@@ -25,8 +24,6 @@ public class GameController {
     private Status status;
 
 
-
-
     public Status getStatus() {
         return status;
     }
@@ -35,256 +32,28 @@ public class GameController {
         this.status=status;
     }
 
-    /**
-     *
-      */
-
-
-    /**
-     * Deal cards to the player
-     * @param player
-     * @param num
-     */
-    public void drawCardsToPlayer(Player player, int num) {
-        for (int i = 0; i < num; i++) {
-            player.getHandCards().add(drawPile.remove(0));
-        }
+    public List<Player> getPlayers() {
+        return this.playerList;
     }
 
-    /**
-     *Players choose to put their cards in the bank
-     * @param player
-     */
-    public void playerDeposit(Player player) {
-        List<Card> handCards = player.getHandCards();
-        ArrayList<Card> selectedCards = new ArrayList<>();
-        for (Card handCard : handCards) {
-            if (handCard.isSelected()){
-                if (handCard instanceof PropertyCard){
-                    throw new RuntimeException("Cannot put a property model.card into bank");
-                }
-                selectedCards.add(handCard);
-            }
-        }
-        if (selectedCards.size()> player.getTurnInfo().cardAvailable){
-            throw new RuntimeException("User has selected more than 3 three model.card in this turn");
-        }else {
-            player.getTurnInfo().cardAvailable= player.getTurnInfo().cardAvailable-selectedCards.size();
-        }
-        for (Card selectedCard : selectedCards) {
-            selectedCard.setSelected(false);
-            player.getBank().deposit(selectedCard);
-            handCards.remove(selectedCard);
-        }
+    public Player getPlayingUser(){
+        return playerList.get(roundIdx);
     }
 
-    /**
-     * The player chooses the asset card in hand as the asset
-     * @param player
-     */
-    public void playerAddProperty(Player player) {
-        List<Card> handCards = player.getHandCards();
-        ArrayList<Card> selectedCards = new ArrayList<>();
-        for (Card handCard : handCards) {
-            if (handCard.isSelected()){
-                if (handCard instanceof PropertyCard){
-                    selectedCards.add(handCard);
-                }else {
-                    throw new RuntimeException("Selected cards contain non-property model.card");
-                }
-            }
-        }
-        if (selectedCards.size()> player.getTurnInfo().cardAvailable){
-            throw new RuntimeException("User has selected more than 3 three model.card in this turn");
-        }else {
-            player.getTurnInfo().cardAvailable= player.getTurnInfo().cardAvailable-selectedCards.size();
-        }
-        Iterator<Card> iterator = selectedCards.iterator();
-        while (iterator.hasNext()){
-            Card selectedCard = iterator.next();
-            if (selectedCard instanceof PropertyWildcard){
-                player.getTurnInfo().addPropertyWildCard((PropertyWildcard)selectedCard);
-                iterator.remove();
-                handCards.remove(selectedCard);
-            }
-        }
-        for (Card selectedCard : selectedCards) {
-            selectedCard.setSelected(false);
-            player.addProperty((PropertyCard)selectedCard);
-            handCards.remove(selectedCard);
-        }
+    public List<Card> getPlayPile() {
+        return playPile;
     }
-
-    /**
-     * The player executes the action card
-     * @param player
-     */
-    public void playerAction(Player player) {
-        List<Card> handCards = player.getHandCards();
-        ArrayList<ActionCard> selectedCards = new ArrayList<>();
-        for (Card handCard : handCards) {
-            if (handCard.isSelected()){
-                if (handCard instanceof ActionCard){
-                    selectedCards.add((ActionCard) handCard);
-                }else {
-                    throw new RuntimeException("Selected cards contain non-action model.card");
-                }
-            }
-        }
-        if (selectedCards.isEmpty()){
-            throw new RuntimeException("No model.card is selected");
-        }
-        if (selectedCards.size()> player.getTurnInfo().cardAvailable){
-            throw new RuntimeException("User has selected more than 3 three card in this turn");
-        }
-        player.getTurnInfo().getPerformingActionCard().addAll(selectedCards);
-        this.setStatus(Status.paying);
-        player.setStatus(Player.Status.action);
-    }
-
-    /**
-     * Determine if the player is using Just Say No card
-     * @param player
-     * @return
-     */
-    public boolean payWithJustSayNo(Player player) {
-        List<Card> handCards = CardApi.getSelectedCard(player.getHandCards());
-        List<Card> bankCards = CardApi.getSelectedCard(player.getBank().getCardInBank());
-        List<Card> propertyCards=CardApi.getSelectedCard(player.getPropertyCards());
-        // To determine whether or not to select just say no
-        if (!handCards.isEmpty()){
-            if (bankCards.size()+propertyCards.size()>0){
-                throw new RuntimeException("Cannot select hand cards with table card ");
-            }else if (handCards.size()>1){
-                throw new RuntimeException("Cannot select more than one hand card");
-            }else {
-                Card card = handCards.get(0);
-                if (card.getName().equals("Just Say No")){
-                    player.setStatus(Player.Status.waiting);
-                    CardApi.putCardToCenter(player,card,this);
-                    return true;
-                }else {
-                    throw new RuntimeException(card.getName()+" Cannot be selected to pay the bill");
-                }
-            }
-        }
-        return false;
-    }
-
-
-    /**
-     * The player uses the rent card
-     * @param player
-     * @param rentCard
-     */
-    public void playerRentAction(Player player, RentCard rentCard) {
-        List<Card> selectedPropertyCards = CardApi.getSelectedCard(rentCard.getSelectablePropertyCards());
-        if (selectedPropertyCards.size()==0){
-            throw new RuntimeException("No property model.card is selected");
-        }
-        PropertyCard propertyCard = (PropertyCard) selectedPropertyCards.remove(0);
-        if (selectedPropertyCards.size()>1){
-            throw new RuntimeException("Only one property model.card can be selected");
-        }
-        Property property = player.getProperty(propertyCard.getName());
-        if (property==null){
-            throw new RuntimeException("You don't have the selected property model.card");
-        }else {
-            List<Player> payingPlayers = this.getPlayers().stream().filter(p -> p != player).collect(Collectors.toList());
-            playerAskPayAction(player,property.getRentPrice()*rentCard.getRentFactor(),payingPlayers);
-            CardApi.putCardToCenter(player, rentCard, this);
-            player.getTurnInfo().cardAvailable= player.getTurnInfo().cardAvailable-1;
-            player.setStatus(Player.Status.action);
-            player.getTurnInfo().getPerformingActionCard().remove(rentCard);
-
-        }
-    }
-
-    /**
-     * Player discard card
-     * @param player
-     */
-    public void playerDiscardCard(Player player) {
-
-        List<Card> handCards = player.getHandCards();
-        List<Card> selectedHandCard = CardApi.getSelectedCard(handCards);
-        if (handCards.size()-selectedHandCard.size()<7){
-            throw new RuntimeException("The number of the rest card cannot be less than 7");
-        }else {
-            for (Card card : selectedHandCard) {
-                CardApi.putCardToCenter(player, card, this);
-            }
-        }
-    }
-
-    /**
-     * The player selects the rent card and doubles its price factor
-     * @param player
-     * @param availableRentCard
-     * @param doubleTheRentCard
-     */
-    public void playerDoubleARentCard(Player player, List<Card> availableRentCard, ActionCard doubleTheRentCard) {
-        List<Card> selectedRentCard = CardApi.getSelectedCard(availableRentCard);
-        if (selectedRentCard.isEmpty()){
-            throw new RuntimeException("No rent is selected");
-        }
-        if (selectedRentCard.size()>1){
-            throw new RuntimeException("Only one rent card can be selected");
-        }
-        RentCard rentCard = (RentCard) selectedRentCard.remove(0);
-        rentCard.doubleTheRent();
-
-        CardApi.putCardToCenter(player, doubleTheRentCard, this);
-        player.getTurnInfo().cardAvailable= player.getTurnInfo().cardAvailable-1;
-        player.getTurnInfo().getPerformingActionCard().remove(doubleTheRentCard);
-        player.setStatus(Player.Status.action);
-    }
-
-
 
     public void startGame() {
-        // Deal cards
+        // send the card
         dealCardToPlayers();
-        // Rotation： Here rotation goes to Player 1 to play the game
+        // turn to the first player
         turnToNextPlayer();
 
     }
 
-    /**
-     * Players use Pass And Go cards
-     * @param player
-     */
-    public void playerPassGoAction(Player player) {
-        drawCardsToPlayer(player,2);
-    }
-
-    /**
-     * The player initiates the payment request to the selected player
-     * @param player
-     * @param i
-     * @param selectedPlayer
-     */
-    public void playerAskPayAction(Player player, int i, Player selectedPlayer) {
-        PayingRequest payingRequest = new PayingRequest(player,i,selectedPlayer);
-        acceptRequest(payingRequest);
-    }
-
-    /**
-     * The player initiates the payment request to the selected player
-     * @param player
-     * @param i
-     * @param players
-     */
-    public void playerAskPayAction(Player player, int i, List<Player> players) {
-        PayingRequest payingRequest = new PayingRequest(player,i,players);
-        acceptRequest(payingRequest);
-    }
-
-    public enum Status{
-        playing, paying
-    }
-
     public void init(Integer playerNum) {
+        // init the whole game
         drawPile = initDrawPile();
         playerList = new ArrayList<>();
         playPile = new ArrayList<>();
@@ -295,9 +64,6 @@ public class GameController {
         }
         this.status = Status.playing;
     }
-    public List<Card> getPlayPile() {
-        return playPile;
-    }
 
     private List<Card> initDrawPile() {
         List<Card> cards =CardFactory.createMonopolyDrawCards();
@@ -306,7 +72,7 @@ public class GameController {
     }
 
     /**
-     * Deal 5 cards to each player
+     * send 5 cards to each player
      */
     public void dealCardToPlayers() {
         for (int i = 0; i < 5; i++) {
@@ -316,67 +82,192 @@ public class GameController {
         }
     }
 
-    public List<Player> getPlayers() {
-        return this.playerList;
+    // send num cards to one player
+    public void drawCardsToPlayer(Player player, int num) {
+        for (int i = 0; i < num; i++) {
+            player.getHandCards().add(drawPile.remove(0));
+        }
     }
 
-
     /**
-     * After confirming, the player selects the next player and deals 2 cards to the next player
+     * when the player confirm, turn to next player, send him 2 cards
      */
     public void turnToNextPlayer() {
-        // Set the status of the previous player to waiting
+        // 将上一位进行的玩家的状态设置为 waiting
         if (roundIdx>-1){
             Player player = playerList.get(roundIdx );
             player.setStatus(Player.Status.waiting);
+            player.notifyListeners();
         }
         roundIdx = (roundIdx+1)%playerList.size();
         Player player = playerList.get(roundIdx );
-        player.setStatus(Player.Status.playing);
         player.setTurnInfo(new Player.TurnInfo());
-        // 5 cards are dealt when the player's card is 0
+        player.setStatus(Player.Status.playing);
+
+        // 当玩家的牌为0时发5张牌
         if (player.getHandCards().isEmpty()) {
             for (int i = 0; i < 5; i++) {
                 player.getHandCards().add(drawPile.remove(0));
             }
-            // Otherwise, two at a time
+            // 否则每次发两张
         } else {
             for (int i = 0; i < 2; i++) {
                 player.getHandCards().add(drawPile.remove(0));
             }
         }
+        player.notifyListeners();
     }
 
-
-    /**
-     * Accept the request from the player and send the request to the specified player
-     * @param payingRequest
-     */
-    public void acceptRequest(GameRequest payingRequest) {
-        for (Player player : payingRequest.getTargetPlayers()) {
-            player.acceptRequest(payingRequest);
-            payingPlayerList.add(player);
-        }
-    }
-
-    public Player getPlayingUser(){
-        return playerList.get(roundIdx);
-    }
-
-    public void turnToNextPayingPlayer() {
+    // turn to next player needed to pay
+    public Player turnToNextPayingPlayer() {
         Player actionPlayer = getPlayingUser();
         if (payingPlayerList.isEmpty()){
-                // The action player status is changed to playing only when the action Player does not have an action card
-              if (actionPlayer.getTurnInfo().getPerformingActionCard().isEmpty()){
+            // 当action player没有action card的时候才会将其状态改为 playing
+            if (actionPlayer.getTurnInfo().getPerformingActionCard().isEmpty()){
                 actionPlayer.setStatus(Player.Status.playing);
             }
             this.status=Status.playing;
-
+            return actionPlayer;
         }else {
             Player player = payingPlayerList.remove(0);
             player.setStatus(Player.Status.paying);
             this.status=Status.paying;
+            return player;
         }
 
+
+    }
+    /**
+     * player deposit card to bank
+     * @param player
+     */
+    public void playerDeposit(Player player) {
+        player.deposit();
+    }
+
+
+    /**
+     * player use the property card
+     * @param player
+     */
+    public void playerAddProperty(Player player) {
+        player.addPropertyAction();
+
+    }
+
+    /**
+     * player use action card
+     * @param player
+     */
+    public void playerAction(Player player) {
+
+        player.executeActionCard();
+    }
+
+    /**
+     * player use rent card
+     * @param player
+     * @param rentCard
+     */
+    public void playerRentAction(Player player, RentCard rentCard) {
+        //拿到除这个玩家外的所有玩家
+        List<Player> targetPlayers = this.getPlayers().stream().filter(p -> p != player).collect(Collectors.toList());
+        registerPayingPlayer(targetPlayers);
+        setStatus(Status.paying);
+        player.rent(rentCard, targetPlayers);
+        CardApi.putCardToCenter(player,rentCard,this);
+    }
+
+    public void registerPayingPlayer(List<Player> targetPlayers) {
+        for (Player targetPlayer : targetPlayers) {
+            payingPlayerList.add(targetPlayer);
+        }
+    }
+
+    /**
+     * player abandon card
+     * @param player
+     */
+    public void playerDiscardCard(Player player) {
+        List<Card> selectedHandCard=player.discardCard();
+        for (Card card : selectedHandCard) {
+            CardApi.putCardToCenter(player, card, this);
+        }
+    }
+
+    /**
+     * player use the double rent card
+     * @param player
+     * @param availableRentCard
+     * @param doubleTheRentCard
+     */
+    public void playerDoubleARentCard(Player player, List<Card> availableRentCard, ActionCard doubleTheRentCard) {
+        player.doubleARentCard(availableRentCard,doubleTheRentCard);
+
+        CardApi.putCardToCenter(player, doubleTheRentCard, this);
+
+
+    }
+
+
+
+    /**
+     * player use Pass And Go card
+     * @param player
+     */
+    public void playerPassGoAction(Player player) {
+        drawCardsToPlayer(player,2);
+    }
+
+    /**
+     * player send a paying request to one player
+     * @param player
+     * @param i
+     * @param selectedPlayer
+     */
+    public void playerAskPayAction(Player player, int i, Player selectedPlayer) {
+        PayingRequest payingRequest = new  PayingRequest(player,i,selectedPlayer);
+        acceptRequest(payingRequest);
+    }
+
+    /**
+     * player send a paying request to the other players
+     * @param player
+     * @param i
+     * @param players
+     */
+    public void playerAskPayAction(Player player, int i, List<Player> players) {
+        PayingRequest payingRequest = new PayingRequest(player,i,players);
+        acceptRequest(payingRequest);
+        setStatus(Status.paying);
+    }
+
+    // player give money property to others
+    public void pay(Player player) {
+        Card card = player.payRequest();
+        if (card!=null){
+            CardApi.putCardToCenter(player,card,this);
+        }
+    }
+
+    // add the paying player to a list
+    public void registerPayingPlayer(Player selectedPlayer) {
+        this.payingPlayerList.add(selectedPlayer);
+    }
+
+    /**
+     * controller accept the request and send the request to the paying player
+     * @param payingRequest
+     */
+    public void acceptRequest(GameRequest payingRequest) {
+        registerPayingPlayer(payingRequest.getTargetPlayers());
+    }
+
+    /**
+     * for playing player, controller is playing
+     * for paying player, controller is paying
+     */
+    public enum Status{
+        playing, paying
     }
 }

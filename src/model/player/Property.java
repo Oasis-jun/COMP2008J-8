@@ -13,17 +13,7 @@ public class Property {
 
     private int hotelNum;
 
-    public List<PropertyCard> getPropertyCardList() {
-        return propertyCardList;
-    }
-
     private List<PropertyCard> propertyCardList;
-
-
-    @Override
-    public String toString() {
-        return property;
-    }
 
     public Property(String property, int maxSetNum, int rentPrice) {
         this.property = property;
@@ -40,8 +30,6 @@ public class Property {
         this.property = property;
     }
 
-
-
     public int getRentPrice() {
         return rentPrice;
     }
@@ -49,12 +37,9 @@ public class Property {
     public void setRentPrice(int rentPrice) {
         this.rentPrice = rentPrice;
     }
-
     public int getSetNumber() {
         return propertyCardList.size();
     }
-
-
     public int getMaxSetNum() {
         return maxSetNum;
     }
@@ -63,15 +48,20 @@ public class Property {
         this.maxSetNum = maxSetNum;
     }
 
+    public List<PropertyCard> getPropertyCardList() {
+        return propertyCardList;
+    }
+    @Override
+    public String toString() {
+        return property;
+    }
+
     public void increaseSet(PropertyCard card) {
         if (propertyCardList.size()< maxSetNum){
             setRentPrice(card.getRentRule()[propertyCardList.size()]);
         }
         propertyCardList.add(card);
     }
-
-
-
 
     public void reduceProperty(PropertyCard card) {
         propertyCardList.remove(card);
@@ -83,8 +73,6 @@ public class Property {
             }
         }
     }
-
-
     public PropertyCard  reduceProperty() {
         PropertyCard card = propertyCardList.remove(0);
         if (propertyCardList.size()< maxSetNum){

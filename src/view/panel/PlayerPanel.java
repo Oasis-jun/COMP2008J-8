@@ -5,6 +5,7 @@ import model.card.*;
 import controller.GameController;
 import model.player.*;
 import view.GameBoard;
+import view.ModelListener;
 import view.dialog.CardSelectDialog;
 import view.dialog.PerformingRentActionDialog;
 import view.dialog.SelectPropertyFrame;
@@ -19,7 +20,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class PlayerPanel extends JPanel {
+public class PlayerPanel extends JPanel implements ModelListener {
 
     private final BankPanel bankPanel;
     private final PropertyPanel propertyPanel;
@@ -38,6 +39,7 @@ public class PlayerPanel extends JPanel {
     public PlayerPanel(Player player, GameController controller, GamePanel gamePanel) {
         this.player = player;
         this.controller = controller;
+        player.addListener(this);
         this.parent = gamePanel;
         setBorder(BorderFactory.createTitledBorder(player.getName()));
         setLayout(new BorderLayout());
@@ -54,7 +56,7 @@ public class PlayerPanel extends JPanel {
         add(operationPanel);
         setLayout(new FlowLayout(FlowLayout.LEFT));
         setMaximumSize(new Dimension((int) (width* GameConfig.SIZE_FACTOR), (int) (height*GameConfig.SIZE_FACTOR)));
-        // 下面为每个按钮创建点击事件
+        // Click events are created for each button
         operationPanel.addDepositAction(e->{
             depositAction();
         });
@@ -82,7 +84,6 @@ public class PlayerPanel extends JPanel {
     private void discardActionButton() {
         try {
             controller.playerDiscardCard(player);
-            updatePlayer();
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e.getMessage(), "Error", JOptionPane.INFORMATION_MESSAGE);
         }
@@ -90,12 +91,8 @@ public class PlayerPanel extends JPanel {
 
     private void payActionButton() {
         try {
-            GameRequest gameRequest = player.getGameRequest();
-            boolean justSayNo =controller.payWithJustSayNo(player);
-            if (!justSayNo){
-                gameRequest.execute(player);
-            }
-            parent.playerActionPerforming();
+            controller.pay(player);
+
         } catch (Exception ex) {
             ex.printStackTrace();
             JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.INFORMATION_MESSAGE);
@@ -106,7 +103,6 @@ public class PlayerPanel extends JPanel {
     private  void actionButtonAction() {
         try {
             controller.playerAction(player);
-            performAction();
         } catch (Exception e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(null, e.getMessage(), "Error", JOptionPane.INFORMATION_MESSAGE);
@@ -115,41 +111,37 @@ public class PlayerPanel extends JPanel {
 
 
     private void performAction() {
-        // 由于double the rent必须要跟rent card一起用，所以首先判断是否存在double the rent card
+        // Since the double the rent must be used with the rent card, first determine whether the double the rent card exists
         if (executeDoubleTheRentCard()){
             return;
         }
 
         ActionCard actionCard = player.getTurnInfo().getPerformingActionCard().get(0);
-        // 如果是rent card则跳出rent card的颜色选择框，并且定义confirm函数
+        // If it is rent card, the color selection box for rent card is displayed and the confirm function is defined
         if (actionCard instanceof RentCard){
             RentCard rentCard = (RentCard) actionCard;
             this.setEnabled(false);
             PerformingRentActionDialog performingRentActionDialog = new PerformingRentActionDialog(actionCard);
-            // 并且定义confirm函数
+            // And define the confirm function
             performingRentActionDialog.addConfirmAction(e->{
                 try {
                     controller.playerRentAction(player,rentCard);
-                    parent.playerActionPerforming();
                 } catch (Exception ex) {
+                    ex.printStackTrace();
+                    player.getTurnInfo().getPerformingActionCard().remove(actionCard);
                     JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.INFORMATION_MESSAGE);
                 }
                 performingRentActionDialog.setVisible(false);
-                this.setEnabled(true);
+//                this.setEnabled(true);
+                // over
             });
         }else {
-            // 如果不是rent card，则根据action card的name执行相应的逻辑，由于有需要交互，所以不适合把逻辑写在controller里面
+            // If it is not a rent card, the corresponding logic is executed according to the name of the action card. Because of the need for interaction, it is not suitable to write the logic in the controller
             List<Player> players = controller.getPlayers().stream().filter(p -> p != player).collect(Collectors.toList());
             switch (actionCard.getName()){
                 case "Pass Go":
                     controller.playerPassGoAction(player);
-                    break;
-                case "Debt Collector":
-                    Player selectedPlayer = (Player)JOptionPane.showInputDialog(this, "Select targeted player", "Select player", 1, null, players.toArray(), players.get(0));
-                    controller.playerAskPayAction(player,5,selectedPlayer);
-                    break;
-                case "It's My Birthday":
-                    controller.playerAskPayAction(player,2,players);
+
                     break;
                 case "House":
                     List<Property> properties = player.getProperties().values().stream().filter(p -> p.getSetNumber() >= p.getMaxSetNum() && (!p.getProperty().equals("Railroad") || !p.getProperty().equals("Utility"))).toList();
@@ -169,6 +161,14 @@ public class PlayerPanel extends JPanel {
                     property = (Property) JOptionPane.showInputDialog(this, "Select full set", "Select full set", 1, null, properties.toArray(), properties.get(0));
                     property.setRentPrice(property.getRentPrice()+4);
                     break;
+                case "Debt Collector":
+                    Player selectedPlayer = (Player)JOptionPane.showInputDialog(this, "Select targeted player", "Select player", 1, null, players.toArray(), players.get(0));
+                    controller.playerAskPayAction(player,5,selectedPlayer);
+                    break;
+                case "It's My Birthday":
+                    controller.playerAskPayAction(player,2,players);
+                    break;
+
                 case "Force Deal":
                     List<Property> myProperties = player.getProperties().values().stream().filter(p -> p.getSetNumber() < p.getMaxSetNum()&&p.getSetNumber()>0).toList();
                     if (myProperties.isEmpty()){
@@ -184,7 +184,8 @@ public class PlayerPanel extends JPanel {
                     }
                     Property playerProperty = (Property) JOptionPane.showInputDialog(this, "Select player's property", "Select property", 1, null, playerProperties.toArray(), playerProperties.get(0));
                     SwapRequest swapRequest = new SwapRequest(player,myProperty,selectedPlayer,playerProperty);
-                    controller.acceptRequest(swapRequest);
+
+                    controller.registerPayingPlayer(selectedPlayer);
                     break;
                 case "Deal Breaker":
                     selectedPlayer = (Player) JOptionPane.showInputDialog(this, "Select targeted player", "Select player", 1, null, players.toArray(), players.get(0));
@@ -195,6 +196,8 @@ public class PlayerPanel extends JPanel {
                     }
                     playerProperty = (Property) JOptionPane.showInputDialog(this, "Select player's property", "Select property", 1, null, playerProperties.toArray(), playerProperties.get(0));
                     StealRequest stealRequest = new StealRequest(player,selectedPlayer,playerProperty,true);
+
+
                     controller.acceptRequest(stealRequest);
                     break;
                 case "Sly Deal":
@@ -206,38 +209,38 @@ public class PlayerPanel extends JPanel {
                     }
                     playerProperty = (Property) JOptionPane.showInputDialog(this, "Select player's property", "Select property", 1, null, playerProperties.toArray(), playerProperties.get(0));
                     stealRequest = new StealRequest(player,selectedPlayer,playerProperty,false);
+
                     controller.acceptRequest(stealRequest);
                     break;
             }
-            // 成功执行action card后设置一些列状态 只有成功执行了 才从相应的位置remove card
+            // After the action card is successfully executed, set some column states to remove the card from the corresponding position only after the Action Card is successfully executed
             player.getTurnInfo().getPerformingActionCard().remove(actionCard);
             CardApi.putCardToCenter(player, actionCard, controller);
             player.getTurnInfo().cardAvailable= player.getTurnInfo().cardAvailable-1;
-            parent.playerActionPerforming();
-
+            controller.setStatus(GameController.Status.paying);
+            player.notifyListeners();
+            // over
         }
     }
 
     private boolean executeDoubleTheRentCard() {
-        // 由于double the rent必须要跟rent card一起用，所以首先判断是否存在double the rent card
+        // Since the double the rent must be used with the rent card, first determine whether the double the rent card exists
         Optional<ActionCard> doubleTheRentOpt = player.getTurnInfo().getPerformingActionCard().stream().filter(a -> a.getName().equals("Double The Rent")).findAny();
         if (doubleTheRentOpt.isPresent()){
             ActionCard doubleTheRentCard = doubleTheRentOpt.get();
             List<Card> availableRentCard=CardApi.getRentCards(player.getTurnInfo().getPerformingActionCard());
-            // 如果存在double the rent 但是不存在rent card则报错返回
+            // If there is a double the rent but no rent card, an error is returned
             if (availableRentCard.isEmpty()){
                 JOptionPane.showMessageDialog(null, "'Double The Rent' card must be used with rent card", "Error", JOptionPane.INFORMATION_MESSAGE);
                 this.setEnabled(true);
             }else {
-                // 如果存在的话，就给这个card的rent card的rent factor设置值为2 供使用这张卡的时候计算
+                // If it exists, set the rent factor of the card's rent card to 2 to calculate when using the card
                 CardSelectDialog cardSelectDialog = new CardSelectDialog(availableRentCard);
                 cardSelectDialog.addConfirmAction(e->{
                     try {
-                        // 如果存在的话，就给这个card的rent card的rent factor设置值为2 供使用这张卡的时候计算
+                        // If it exists, set the rent factor of the card's rent card to 2 to calculate when using the card
                         controller.playerDoubleARentCard(player,availableRentCard,doubleTheRentCard);
                         cardSelectDialog.setVisible(false);
-                        //
-                        parent.playerActionPerforming();
                     } catch (Exception ex) {
                         JOptionPane.showMessageDialog(null,ex.getMessage() , "Error", JOptionPane.INFORMATION_MESSAGE);
                     }
@@ -251,12 +254,6 @@ public class PlayerPanel extends JPanel {
     private  void addNewPropertyAction() {
         try {
             controller.playerAddProperty(player);
-            if (player.getTurnInfo().hasPropertyWildCard()){
-                player.setStatus(Player.Status.decidingWildCardChange);
-                new SelectPropertyFrame(player,this);
-            }else {
-                updatePlayer();
-            }
         } catch (Exception e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(null, e.getMessage(), "Error", JOptionPane.INFORMATION_MESSAGE);
@@ -266,7 +263,6 @@ public class PlayerPanel extends JPanel {
     private void depositAction() {
         try {
             controller.playerDeposit(player);
-            updatePlayer();
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e.getMessage(), "Error", JOptionPane.INFORMATION_MESSAGE);
         }
@@ -276,7 +272,7 @@ public class PlayerPanel extends JPanel {
         handCardPanel.removeAll();
         for (Card handCard : player.getHandCards()) {
             handCard.setSelected(false);
-            // 允许出牌的玩家和paying的玩家看自己的牌
+            // Allow the player who is playing and the player who is paying to see their cards
             if (Player.Status.playing.equals(player.getStatus())||Player.Status.paying.equals(player.getStatus())){
                 handCardPanel.add(new CardLabel(handCard));
             }else {
@@ -288,30 +284,27 @@ public class PlayerPanel extends JPanel {
     }
 
     /**
-     * 更新玩家的游戏状态
+     * Update the player's game status
      */
     public void updatePlayer(){
-        if (Player.Status.playing.equals(player.getStatus())||Player.Status.action.equals(player.getStatus())){
+         if (Player.Status.playing.equals(player.getStatus())||Player.Status.action.equals(player.getStatus())){
             this.setBackground(Color.ORANGE);
         }else if (Player.Status.paying.equals(player.getStatus())){
             this.setBackground(Color.blue);
         }else {
             this.setBackground(Color.white);
         }
-        // 一些列的面板更新操作
+        // Some columns of panel update operations
         updateHandCards();
-        // 里面有很多游戏的操作逻辑
         updateOperationPanel();
         updatePropertyPanel();
         updateBankPanel();
         updateInfoPanel();
         doLayout();
         repaint();
-        // 当controller的状态变成playing 说明当前操作的玩家就是选择出牌的玩家
-        // 如果当前出牌的玩家的状态还是action 说明当前出牌的玩家还有action card正需要处理
-        if (controller.getStatus()==GameController.Status.playing&&player.getStatus() == Player.Status.action){
-            performAction();
-        }
+        // When the controller state changes to playing, it means that the current player is the player who chose to play the card
+        // If the status of the current player is still action, the current player has an action card that needs to be processed
+
     }
 
     private void updateInfoPanel() {
@@ -349,6 +342,8 @@ public class PlayerPanel extends JPanel {
         }else {
             operationPanel.enableAll(false);
         }
+        operationPanel.doLayout();
+        operationPanel.repaint();
     }
 
     public void addConfirmAction() {
@@ -368,7 +363,6 @@ public class PlayerPanel extends JPanel {
             return;
         }
         controller.turnToNextPlayer();
-        parent.updatePlayerPanelList();
         parent.doLayout();
         parent.repaint();
     }
@@ -381,4 +375,15 @@ public class PlayerPanel extends JPanel {
     }
 
 
+    @Override
+    public void update() {
+        updatePlayer();
+        if (!player.getStatus().equals(Player.Status.paying)&&controller.getStatus().equals(GameController.Status.paying)){
+            parent.toNextPlayerToPay();
+        }else if (controller.getStatus()==GameController.Status.playing&&player.getStatus() == Player.Status.action){
+            performAction();
+        }else if (Player.Status.decidingWildCardChange.equals(player.getStatus())){
+            new SelectPropertyFrame(player,this);
+        }
+    }
 }

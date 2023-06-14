@@ -9,11 +9,13 @@ import java.util.List;
 public class CardApi {
 
 
+    //put the card into the play pile
     public static  void putCardToCenter(Player player, Card card, GameController controller) {
         player.getHandCards().remove(card);
         controller.getPlayPile().add(card);
     }
 
+    //input a list of card and return the selected cards
     public static List<Card> getSelectedCard(List<? extends Card> cards) {
         ArrayList<Card> selectedCard = new ArrayList<>();
         for (Card selectablePropertyCard : cards) {

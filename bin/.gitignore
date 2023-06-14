@@ -1,4 +1,5 @@
-/model/
 /view/
-/test/
+/config/
 /controller/
+/model/
+/test/

@@ -2,6 +2,8 @@ import view.GameBoard;
 
 public class Main {
     public static void main(String[] args) {
-        new GameBoard().start();
+        // start game from there
+        GameBoard gameBoard = new GameBoard();
+        gameBoard.start();
     }
 }

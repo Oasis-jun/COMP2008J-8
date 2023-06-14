@@ -10,13 +10,13 @@ import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 public class GameBoard {
 
     /**
-     * MVC中的controller
+     * MVC controller
      */
     private GameController controller;
 
 
     /**
-     * MVC中的view
+     * MVC view
      */
     private GameBoardFrame gameBoardFrame;
 
@@ -28,8 +28,8 @@ public class GameBoard {
 
 
     /**
-     * 大富翁游戏的入口
-     * 先启动一个菜单frame，选择人数后在回调函数里面打开游戏的主板frame
+     * The entrance to the Monopoly game
+     * Start a menu frame, select the number of people in the callback function to open the game's motherboard frame
      */
     public void start(){
         JFrame menuFrame = new JFrame();
@@ -42,22 +42,22 @@ public class GameBoard {
         menuFrame.setLayout(new FlowLayout(FlowLayout.LEFT));
         menuFrame.setDefaultCloseOperation(EXIT_ON_CLOSE);
         next.addActionListener(e->{
-
-
-            // 选择人数后在回调函数里面打开游戏的主板frame
-            Integer playerNum = Integer.valueOf((String) comboBox.getSelectedItem());
-            controller.init(playerNum);
-            // 进入主游戏界面
-            gameBoardFrame = new GameBoardFrame(controller);
-            menuFrame.setVisible(false);
-            gameBoardFrame.setVisible(true);
-
+            nextOperation(menuFrame, comboBox);
         });
         menuFrame.setVisible(true);
+        // The pack function causes the size of the motherboard to be determined by the size of the child containers
         menuFrame.pack();
     }
 
-
+    private void nextOperation(JFrame menuFrame, JComboBox<String> comboBox) {
+        // Select the number of people in the callback function to open the game's motherboard frame
+        Integer playerNum = Integer.valueOf((String) comboBox.getSelectedItem());
+        controller.init(playerNum);
+        // Enter the main game screen
+        gameBoardFrame = new GameBoardFrame(controller);
+        menuFrame.setVisible(false);
+        gameBoardFrame.setVisible(true);
+    }
 
 
 }

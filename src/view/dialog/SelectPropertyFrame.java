@@ -65,7 +65,6 @@ public class SelectPropertyFrame extends JDialog {
             player.addProperty(propertyWildcards.remove(0));
             player.setStatus(Player.Status.playing);
             if (player.getTurnInfo().propertyWildcards.isEmpty()){
-
                 parent.setEnabled(true);
                 parent.updatePlayer();
             }else {
