@@ -26,10 +26,16 @@ public class SelectPropertyFrame extends JDialog {
         JButton confirm = new JButton("Confirm");
         JPanel availablePropertyPanel = new JPanel();
         availablePropertyPanel.setBorder(BorderFactory.createTitledBorder("Available Cards"));
+        int width =remove.getCardsToChange().size()*70;
+        int height =180;
+        availablePropertyPanel.setPreferredSize(new Dimension(width+70,height));
+        availablePropertyPanel.setMinimumSize(new Dimension(width+70,height));
+        availablePropertyPanel.setMaximumSize(new Dimension(width+70,height));
         for (Card propertyCard : remove.getCardsToChange()) {
             CardLabel cardLabel = new CardLabel(propertyCard);
             availablePropertyPanel.add(cardLabel);
         }
+
         add(originCardPanel);
         add(availablePropertyPanel);
         add(confirm);

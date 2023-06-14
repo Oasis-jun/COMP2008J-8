@@ -1,5 +1,6 @@
 package view.panel;
 
+import config.GameConfig;
 import controller.GameController;
 import model.player.Player;
 import view.GameBoardFrame;
@@ -16,6 +17,9 @@ public class GamePanel extends JLabel{
     private GameController controller;
 
     private GameBoardFrame parent;
+
+    private int width=1700;
+    private int height = 2500;
 
     /**
      * 游戏的主要内容为三大部分， 玩家面板，消息面板，开始按钮面板
@@ -36,18 +40,16 @@ public class GamePanel extends JLabel{
 
         }
 
-        // 消息面板
-        add(new JLabel("---------------------------------------This is a message---------------------------------------"));
+
         // 开始按钮面板
         JPanel horizontalBox = new  JPanel();
-        horizontalBox.setMinimumSize(new Dimension(1700,30));
-        horizontalBox.setPreferredSize(new Dimension(1700,30));
+
         Button startButton = new Button("Start");
         horizontalBox.add(startButton);
         add(horizontalBox);
-
+        horizontalBox.setPreferredSize(new Dimension((int) (width* GameConfig.SIZE_FACTOR), (int) (height*GameConfig.SIZE_FACTOR)));
         setLayout(new FlowLayout(FlowLayout.CENTER));
-        setPreferredSize(new Dimension(1700,2500));
+        setPreferredSize(new Dimension((int) (width* GameConfig.SIZE_FACTOR), (int) (height*GameConfig.SIZE_FACTOR)));
 
         startButton.addActionListener(e->{
 

@@ -1,5 +1,6 @@
 package view.label;
 
+import config.GameConfig;
 import model.card.Card;
 
 import javax.swing.*;
@@ -46,6 +47,7 @@ public class CardLabel extends JLabel {
                 }
                 setIcon(imageIcon);
                 Container parent = e.getComponent().getParent();
+
                 parent.doLayout();
                 parent.repaint();
             }
@@ -53,13 +55,13 @@ public class CardLabel extends JLabel {
     }
 
     public void enlarge() {
-        imageIcon.setImage(image.getScaledInstance(width + width /3, height + width /3,Image.SCALE_SMOOTH));
-        setPreferredSize(new Dimension(width + width /3, height + width /3));
+        imageIcon.setImage(image.getScaledInstance((int) (width *1.3*GameConfig.SIZE_FACTOR), (int) (height *1.3*GameConfig.SIZE_FACTOR),Image.SCALE_SMOOTH));
+        setPreferredSize(new Dimension((int) (width *1.3*GameConfig.SIZE_FACTOR), (int) (height *1.3*GameConfig.SIZE_FACTOR)));
     }
 
     public void recoverSize() {
-        imageIcon.setImage(image.getScaledInstance(width, height,Image.SCALE_SMOOTH));
-        setPreferredSize(new Dimension(width, height));
+        imageIcon.setImage(image.getScaledInstance((int) (width* GameConfig.SIZE_FACTOR), (int) (height*GameConfig.SIZE_FACTOR),Image.SCALE_SMOOTH));
+        setPreferredSize(new Dimension((int) (width* GameConfig.SIZE_FACTOR), (int) (height*GameConfig.SIZE_FACTOR)));
     }
 
 

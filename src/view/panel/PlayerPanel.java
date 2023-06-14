@@ -1,5 +1,6 @@
 package view.panel;
 
+import config.GameConfig;
 import model.card.*;
 import controller.GameController;
 import model.player.*;
@@ -30,6 +31,9 @@ public class PlayerPanel extends JPanel {
     private GameController controller;
 
     private GamePanel parent;
+    private final int width = 2000;
+    private final int height = 200;
+
 
     public PlayerPanel(Player player, GameController controller, GamePanel gamePanel) {
         this.player = player;
@@ -49,7 +53,7 @@ public class PlayerPanel extends JPanel {
         add(propertyPanel);
         add(operationPanel);
         setLayout(new FlowLayout(FlowLayout.LEFT));
-        setMaximumSize(new Dimension(1800, 200));
+        setMaximumSize(new Dimension((int) (width* GameConfig.SIZE_FACTOR), (int) (height*GameConfig.SIZE_FACTOR)));
         // 下面为每个按钮创建点击事件
         operationPanel.addDepositAction(e->{
             depositAction();

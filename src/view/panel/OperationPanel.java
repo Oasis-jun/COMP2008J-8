@@ -1,5 +1,6 @@
 package view.panel;
 
+import config.GameConfig;
 import view.OperationButton;
 
 import javax.swing.*;
@@ -15,6 +16,9 @@ public class OperationPanel extends JPanel {
     private JButton confirmButton;
 
     private JButton payButton;
+
+    private final int width = 250;
+    private final int height = 200;
     public OperationPanel() {
         bankingCardButton=new OperationButton("Depositing");
         actionCardButton = new OperationButton("Perform action");
@@ -34,7 +38,7 @@ public class OperationPanel extends JPanel {
         setBorder(BorderFactory.createTitledBorder("Operation"));
         setBackground(Color.WHITE);
 //        setLayout(new FlowLayout(FlowLayout.CENTER));
-        setPreferredSize(new Dimension(250, 200));
+        setPreferredSize(new Dimension((int) (width* GameConfig.SIZE_FACTOR), (int) (height*GameConfig.SIZE_FACTOR)));
 
     }
 
